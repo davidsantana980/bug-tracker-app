@@ -3,10 +3,16 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { Navbar, Container } from 'react-bootstrap';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+    <Navbar expand="lg" sticky="top" bg="dark" variant='dark' className='mb-3'>
+      <Container>
+        <Navbar.Brand href="#">Issue Tracker</Navbar.Brand>
+      </Container>
+    </Navbar>
     <App />
   </React.StrictMode>
 );
