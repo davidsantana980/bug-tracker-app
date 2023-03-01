@@ -17,9 +17,9 @@ const readMany = (search, options) => {
 
 module.exports = function (app) {
 
-  app.get('/api/issues/:project', async (req, res) => {
+  app.get('/api/issues', async (req, res) => {
     let queryParams = { 
-      project: req.params.project,
+      project: req.query.project,
       assigned_to: req.query.assigned_to,
       status_text: req.query.status_text,
       open: req.query.open,

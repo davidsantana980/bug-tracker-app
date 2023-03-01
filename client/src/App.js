@@ -4,23 +4,66 @@ import { Component, useState } from "react";
 import { Container, Form, Button, FormGroup } from "react-bootstrap";
 
 function GetIssueForm() {
-  const [project, setProject] = useState("");
+  const [projectObj, setProject] = useState({
+    project: "",
+    assigned_to: "",
+    status_text: "",
+    open: undefined,
+    _id: "",
+    issue_title: "",
+    issue_text: "",
+    created_by: "",
+    created_on: "",
+    updated_on: ""
+  });
+
+  const handleChange = (event) => {
+    const inputName = event.target.name
+    const inputValue = event.target.value;
+
+    setProject({
+      ...projectObj,
+      [inputName]: inputValue
+    });
+  }
+
+  const handleCheck = () => {
+    setProject({
+      ...projectObj,
+      open : !projectObj.open
+    })
+    console.log(projectObj.open)
+  }
 
   let handleSubmit = (event) => {
     event.preventDefault()
-    fetch(`http://localhost:5000/api/issues/${project}/`)
-    .then((res) => {
-      console.log(res.json())
-    }) 
+    let queryParams = {...projectObj}
+
+    Object.keys(projectObj).forEach(key => {
+      return !queryParams[key] ? delete queryParams[key] : {}
+    });
+
+    console.log(queryParams, new URLSearchParams(queryParams).toString())
+    // fetch(`http://localhost:5000/api/issues/${projectObj.project}?${new URLSearchParams(projectObj).toString}`)
+    // .then((res) => {
+    //   console.log(res.json())
+    // }) 
   }
 
   return (
     <Form>
-      <Form.Label>Get all issues in a project...</Form.Label>
-      <Form.Control type="text" placeholder="Check console for results!" onChange={(event) => setProject(event.target.value)} value={project}/>
-      <Button variant="primary" type="submit" onClick={handleSubmit}>
-        Submit
-      </Button>
+      <Form.Label>Get all issues in a project, or specify with extra fields</Form.Label>
+      <Form.Control value={projectObj.project} onChange={handleChange} type="text" placeholder="Project name" name='project' />
+      <Form.Control value={projectObj._id} onChange={handleChange} type="text" name="_id" placeholder="*_id" required=''/>
+      <Form.Control value={projectObj.issue_title} onChange={handleChange} type="text" name="issue_title" placeholder="(opt)Title" required=''/>
+      <Form.Control value={projectObj.issue_text} onChange={handleChange} as="textarea" name="issue_text" placeholder="(opt)Text" required=''/>
+      <Form.Control value={projectObj.created_by} onChange={handleChange} type="text" name="created_by" placeholder="(opt)Created by" required=''/>
+      <Form.Control value={projectObj.created_on} onChange={handleChange} type="date" name="created_on" placeholder="(opt)Created by" required=''/>
+      <Form.Control value={projectObj.updated_on} onChange={handleChange} type="date" name="updated_on" placeholder="(opt)Created by" required=''/>
+      <Form.Control value={projectObj.assigned_to} onChange={handleChange} type="text" name="assigned_to" placeholder="(opt)Assigned to" />
+      <Form.Control value={projectObj.status_text} onChange={handleChange} type="text" name="status_text" placeholder="(opt)Status text" />
+      <Form.Check value={projectObj.open} onChange={handleCheck} name="open" type='checkbox' label="Are the issues closed?"/>      
+      <Button variant="primary" type="submit" onClick={handleSubmit}>Submit</Button>
     </Form>
   );
 }
@@ -127,8 +170,8 @@ function UpdateIssueForm(){
   return (
     <Form id="testForm2">
         <Form.Label>Update issue on a project (Change any or all to update issue on the _id supplied)</Form.Label>
-        <Form.Control value={state.issue_project} onChange={handleChange} type="text" name="issue_project" placeholder="Project of which an issue is to be updated"/>
         <Form.Control value={state._id} onChange={handleChange} type="text" name="_id" placeholder="*_id" required=''/>
+        <Form.Control value={state.issue_project} onChange={handleChange} type="text" name="issue_project" placeholder="Change the issue's project"/>
         <Form.Control value={state.issue_title} onChange={handleChange} type="text" name="issue_title" placeholder="(opt)Title" required=''/>
         <Form.Control value={state.issue_text} onChange={handleChange} as="textarea" name="issue_text" placeholder="(opt)Text" required=''/>
         <Form.Control value={state.created_by} onChange={handleChange} type="text" name="created_by" placeholder="(opt)Created by" required=''/>
