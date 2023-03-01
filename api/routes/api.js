@@ -42,10 +42,10 @@ module.exports = function (app) {
     }
   })
     
-  app.post('/api/issues/:project', async (req, res) => {
+  app.post('/api/issues', async (req, res) => {
     let newDate = new Date();
     let doc = {
-      project: req.params.project,
+      project: req.body.issue_project,
       issue_title: req.body.issue_title,
       issue_text: req.body.issue_text, 
       created_on: newDate,
@@ -64,9 +64,9 @@ module.exports = function (app) {
     }
   })
     
-  app.put('/api/issues/:project', async (req, res) => {      
+  app.put('/api/issues', async (req, res) => {      
     let updatedItems = {
-      project: req.params.project,
+      project: req.body.issue_project,
       issue_title: req.body.issue_title,
       issue_text: req.body.issue_text, 
       updated_on: new Date(),
@@ -98,7 +98,7 @@ module.exports = function (app) {
     }
   })
     
-  app.delete('/api/issues/:project', async (req, res) => {    
+  app.delete('/api/issues', async (req, res) => {    
     try{
       if(!req.body._id) return res.json({ error: 'missing _id' })  
       await Issue.findByIdAndDelete(req.body._id, (err,data) => {
