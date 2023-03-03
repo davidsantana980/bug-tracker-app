@@ -8,13 +8,12 @@ function GetIssueForm() {
     project: "",
     assigned_to: "",
     status_text: "",
-    open: undefined,
+    //gonna look for open issues by default
+    open: true,
     _id: "",
     issue_title: "",
     issue_text: "",
-    created_by: "",
-    created_on: "",
-    updated_on: ""
+    created_by: ""
   });
 
   const handleChange = (event) => {
@@ -28,10 +27,12 @@ function GetIssueForm() {
   }
 
   const handleCheck = () => {
+
     setProject({
       ...projectObj,
       open : !projectObj.open
-    })
+    })  
+
     console.log(projectObj.open)
   }
 
@@ -39,8 +40,9 @@ function GetIssueForm() {
     event.preventDefault()
     let queryParams = {...projectObj}
 
+    //delete undefined body parameters EXCEPT FOR "open", which is a boolean and can be falsy
     Object.keys(projectObj).forEach(key => {
-      return !queryParams[key] ? delete queryParams[key] : {}
+      return !queryParams[key] && typeof(queryParams[key]) !== "boolean" ? delete queryParams[key] : {}
     });
 
     let url = `http://localhost:5000/api/issues?${new URLSearchParams(queryParams).toString()}` 
@@ -60,8 +62,6 @@ function GetIssueForm() {
       <Form.Control value={projectObj.issue_title} onChange={handleChange} type="text" name="issue_title" placeholder="(opt)Title" required=''/>
       <Form.Control value={projectObj.issue_text} onChange={handleChange} as="textarea" name="issue_text" placeholder="(opt)Text" required=''/>
       <Form.Control value={projectObj.created_by} onChange={handleChange} type="text" name="created_by" placeholder="(opt)Created by" required=''/>
-      <Form.Control value={projectObj.created_on} onChange={handleChange} type="date" name="created_on" placeholder="(opt)Created by" required=''/>
-      <Form.Control value={projectObj.updated_on} onChange={handleChange} type="date" name="updated_on" placeholder="(opt)Created by" required=''/>
       <Form.Control value={projectObj.assigned_to} onChange={handleChange} type="text" name="assigned_to" placeholder="(opt)Assigned to" />
       <Form.Control value={projectObj.status_text} onChange={handleChange} type="text" name="status_text" placeholder="(opt)Status text" />
       <Form.Check value={projectObj.open} onChange={handleCheck} name="open" type='checkbox' label="Are the issues closed?"/>      
@@ -124,7 +124,6 @@ function PostIssueForm(){
 function UpdateIssueForm(){
 
   const [state, setState] = useState({
-    issue_project: "",
     _id: "",
     issue_title: "",
     issue_text: "", 
@@ -173,7 +172,6 @@ function UpdateIssueForm(){
     <Form id="testForm2">
         <Form.Label>Update issue on a project (Change any or all to update issue on the _id supplied)</Form.Label>
         <Form.Control value={state._id} onChange={handleChange} type="text" name="_id" placeholder="*_id" required=''/>
-        <Form.Control value={state.issue_project} onChange={handleChange} type="text" name="issue_project" placeholder="Change the issue's project"/>
         <Form.Control value={state.issue_title} onChange={handleChange} type="text" name="issue_title" placeholder="(opt)Title" required=''/>
         <Form.Control value={state.issue_text} onChange={handleChange} as="textarea" name="issue_text" placeholder="(opt)Text" required=''/>
         <Form.Control value={state.created_by} onChange={handleChange} type="text" name="created_by" placeholder="(opt)Created by" required=''/>

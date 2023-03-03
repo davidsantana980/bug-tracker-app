@@ -33,7 +33,10 @@ module.exports = function (app) {
     
     //delete undefined query parameters
     Object.keys(queryParams).forEach(key => queryParams[key] === undefined ? delete queryParams[key] : {});
-    
+
+    //not gonna get all objects
+    if(Object.values(queryParams).length < 1) return res.json({ error: 'no get field(s) sent' })  
+
     try{
       let result = await readMany(queryParams);
       return res.json(result)
@@ -43,16 +46,14 @@ module.exports = function (app) {
   })
     
   app.post('/api/issues', async (req, res) => {
-    let date = new Date()
-    //latest attempt: tried to subtract local time offset (approx. 4 hours) to get the right date, code works until ISOString conversion
-    let newDate = new Date(date.getTime() + date.getTimezoneOffset() / 60000).toISOString().split('T')[0];
+    let date = new Date().toISOString().split('T')[0];
 
     let doc = {
       project: req.body.issue_project,
       issue_title: req.body.issue_title,
       issue_text: req.body.issue_text, 
-      created_on: newDate,
-      updated_on: newDate,
+      created_on: date,
+      updated_on: date,
       created_by: req.body.created_by,
       assigned_to: req.body.assigned_to, 
       status_text: req.body.status_text
@@ -81,13 +82,14 @@ module.exports = function (app) {
 
     if(!req.body._id) return res.json({ error: 'missing _id' })
 
-    //delete undefined body parameters
-    Object.keys(updatedItems).forEach(key => !updatedItems[key] ? delete updatedItems[key] : {});
+    //delete undefined body parameters EXCEPT FOR "open", which is a boolean and can be falsy
+    Object.keys(updatedItems).forEach(key => !updatedItems[key] && typeof(updatedItems[key]) !== "boolean" ? delete updatedItems[key] : {});
     
-    //2 items will always be updated; the name of the project and the date of the update. 
+    //1 item will always be updated; the date of the update. 
     //if no more items were updated, it means no update fields were filled.
 
-    if(Object.entries(updatedItems).length <= 2) return res.json({ error: 'no update field(s) sent', _id: req.body._id })  
+    if(Object.values(updatedItems).length <= 1) return res.json({ error: 'no update field(s) sent', _id: req.body._id })  
+
     try{
       if(!req.body._id) return res.json({ error: 'missing _id' })  
       await Issue.findByIdAndUpdate(req.body._id, updatedItems, (err, data) => {
