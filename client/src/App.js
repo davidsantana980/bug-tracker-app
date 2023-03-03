@@ -43,11 +43,13 @@ function GetIssueForm() {
       return !queryParams[key] ? delete queryParams[key] : {}
     });
 
-    console.log(queryParams, new URLSearchParams(queryParams).toString())
-    // fetch(`http://localhost:5000/api/issues/${projectObj.project}?${new URLSearchParams(projectObj).toString}`)
-    // .then((res) => {
-    //   console.log(res.json())
-    // }) 
+    let url = `http://localhost:5000/api/issues?${new URLSearchParams(queryParams).toString()}` 
+
+    console.log(url)
+    fetch(url)
+    .then((res) => {
+      console.log(res.json())
+    }) 
   }
 
   return (

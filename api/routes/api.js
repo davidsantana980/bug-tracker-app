@@ -35,7 +35,7 @@ module.exports = function (app) {
     Object.keys(queryParams).forEach(key => queryParams[key] === undefined ? delete queryParams[key] : {});
     
     try{
-      let result = await readMany(queryParams, {project: 0});
+      let result = await readMany(queryParams);
       return res.json(result)
     }catch(error){
       return res.json(error)
@@ -43,7 +43,10 @@ module.exports = function (app) {
   })
     
   app.post('/api/issues', async (req, res) => {
-    let newDate = new Date();
+    let date = new Date()
+    //latest attempt: tried to subtract local time offset (approx. 4 hours) to get the right date, code works until ISOString conversion
+    let newDate = new Date(date.getTime() + date.getTimezoneOffset() / 60000).toISOString().split('T')[0];
+
     let doc = {
       project: req.body.issue_project,
       issue_title: req.body.issue_title,
