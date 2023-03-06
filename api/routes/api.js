@@ -88,7 +88,7 @@ module.exports = function (app) {
     //1 item will always be updated; the date of the update. 
     //if no more items were updated, it means no update fields were filled.
 
-    if(Object.values(updatedItems).length <= 1) return res.json({ error: 'no update field(s) sent', _id: req.body._id })  
+    // if(Object.entries(updatedItems).length <= 2) return res.json({ error: 'no update field(s) sent', _id: req.body._id })  
 
     try{
       if(!req.body._id) return res.json({ error: 'missing _id' })  

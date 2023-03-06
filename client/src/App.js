@@ -8,8 +8,7 @@ function GetIssueForm() {
     project: "",
     assigned_to: "",
     status_text: "",
-    //gonna look for open issues by default
-    open: true,
+    open: undefined,
     _id: "",
     issue_title: "",
     issue_text: "",
@@ -30,7 +29,7 @@ function GetIssueForm() {
 
     setProject({
       ...projectObj,
-      open : !projectObj.open
+      open : projectObj.open === undefined ? false : !projectObj.open
     })  
 
     console.log(projectObj.open)
@@ -130,7 +129,7 @@ function UpdateIssueForm(){
     created_by: "",
     assigned_to: "", 
     status_text: "",
-    open: true
+    open: undefined
   });
 
   const handleChange = (event) => {
@@ -146,8 +145,8 @@ function UpdateIssueForm(){
   const handleCheck = () => {
     setState({
       ...state,
-      open : !state.open
-    })
+      open : state.open === undefined ? false : !state.open
+    })    
   }
 
   const handleSubmit = (event) => {
