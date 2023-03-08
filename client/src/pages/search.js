@@ -1,5 +1,6 @@
 import { Form, Button, Container } from "react-bootstrap";
 import {useState} from "react";
+import { LinkContainer } from "react-router-bootstrap";
 
 export default function GetIssueForm() {
     const [projectObj, setProject] = useState({
@@ -33,25 +34,6 @@ export default function GetIssueForm() {
       console.log(projectObj.open)
     }
   
-    let handleSubmit = (event) => {
-      event.preventDefault()
-      let queryParams = {...projectObj}
-  
-      //delete undefined body parameters EXCEPT FOR "open", which is a boolean and can be falsy
-      Object.keys(projectObj).forEach(key => {
-        return !queryParams[key] && typeof(queryParams[key]) !== "boolean" ? delete queryParams[key] : {}
-      });
-  
-      let url = `http://localhost:5000/api/issues?${new URLSearchParams(queryParams).toString()}` 
-  
-      fetch(url)
-      .then((res) =>  res.json())
-      .then(result => {
-        console.log(result[0])
-      })
-    
-    }
-  
     return (
     <Container>
         <Form>
@@ -64,7 +46,9 @@ export default function GetIssueForm() {
             <Form.Control value={projectObj.assigned_to} onChange={handleChange} type="text" name="assigned_to" placeholder="(opt)Assigned to" />
             <Form.Control value={projectObj.status_text} onChange={handleChange} type="text" name="status_text" placeholder="(opt)Status text" />
             <Form.Check value={projectObj.open} onChange={handleCheck} name="open" type='checkbox' label="Are the issues closed?"/>      
-            <Button variant="primary" type="submit" onClick={handleSubmit}>Submit</Button>
+            <LinkContainer to="/see-issues" state={projectObj}>  
+              <Button variant="primary" type="submit">Submit</Button>
+            </LinkContainer>
         </Form>
     </Container>
     );

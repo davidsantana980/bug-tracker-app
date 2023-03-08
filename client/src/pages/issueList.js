@@ -1,58 +1,64 @@
+import { useState, useEffect } from "react"
+import { Button, Card, CardGroup, Container } from "react-bootstrap"
+import { useLocation } from "react-router-dom"
 
-export default function IssueList(props){
-    // const {issueList} = props
+export default function IssueList(){
+    const [state, changeState] = useState({
+        issueList : [],
+        dataIsLoaded : false
+    })
 
-    //this is supposed to be an array de objetos donde project === el nombre del label de la projectCard
-    const issueList = [{
-            "_id": "6399def2b8de7be5d8451ae2",
-            "project": "proyeye",
-            "issue_title": "Test",
-            "issue_text": "Text",
-            "created_on": "Wed Dec 14 2022 10:34:26 GMT-0400 (hora de Venezuela)",
-            "updated_on": "Wed Dec 14 2022 10:34:25 GMT-0400 (hora de Venezuela)",
-            "created_by": "Salvador",
-            "assigned_to": "Sabrina",
-            "open": true,
-            "status_text": "191",
-            "__v": 0
-        }, 
-        {
-            "_id": "824u285772458dakfbbla32",
-            "project": "proyeye",
-            "issue_title": "Test",
-            "issue_text": "Text",
-            "created_on": "Wed Dec 14 2022 10:34:26 GMT-0400 (hora de Venezuela)",
-            "updated_on": "Wed Dec 14 2022 10:34:25 GMT-0400 (hora de Venezuela)",
-            "created_by": "Sabrina",
-            "assigned_to": "Salvador",
-            "open": true,
-            "status_text": "191",
-            "__v": 0
-        }
-    ]
-  
-    let issueCards = issueList.map((issue, index) => {
-            return (
-                <tr key={index}>
-                    <td key={0}>{issue._id}</td>
-                    <td key={1}>{issue.issue_title}</td>
-                    <td key={2}>{issue.issue_text}</td>
-                    <td key={3}>{issue.created_on}</td>
-                    <td key={4}>{issue.updated_on}</td>
-                    <td key={5}>{issue.created_by}</td>
-                    <td key={6}>{issue.assigned_to}</td>
-                    <td key={7}>{issue.open ? "In progress" : "Closed"}</td>
-                    <td key={8}>{issue.status_text}</td>
-                </tr>
-            )
-        }
-    )
+    let {state : params} = useLocation()
+    let queryParams = {...params}
+    
+    //delete undefined body parameters EXCEPT FOR "open", which is a boolean and can be falsy
+    Object.keys(params).forEach(key => {
+        return !queryParams[key] && typeof(queryParams[key]) !== "boolean" ? delete queryParams[key] : {}
+    });
+    
+    let url = `http://localhost:5000/api/issues?${new URLSearchParams(queryParams).toString()}` 
+
+    useEffect(() => {
+        fetch(url)
+        .then((res) => res.json()) //take the response string and turn it into a json array
+        .then((json) => { //take the json array from the previous step...
+            changeState({
+                issueList: json, //...and make our this.state.items<Array> == the JSON<Array> response
+                dataIsLoaded:true //changed status
+            })
+        })  
+    })
+
+    let issueCards = state.issueList.map((issue, index) => {
+        return (
+            <Container className="col-md-12 col-lg-8 mt-2" key={index}>
+                <Card key={index}>
+                    <Card.Body>
+                        <Card.Title>{issue.issue_title}</Card.Title>
+                        <Card.Subtitle>ID: {issue._id}</Card.Subtitle>
+                        <Card.Text>{issue.status_text}</Card.Text>
+                        {/* <LinkContainer to={`/see-issues`} state={{project : issueAndCount[0]}}> */}
+                            <Card.Link><Button>See issue details</Button></Card.Link>
+                        {/* </LinkContainer> */}
+                    </Card.Body>
+                </Card>
+            </Container>
+        )
+    })
+
+    if(!state.dataIsLoaded){
+        return (
+            <Container>
+                <h1>Please wait...</h1>
+            </Container>
+        )
+    } 
 
     return (
-        <table>
-            <tbody>
+        <Container>
+            <CardGroup>
                 {issueCards}
-            </tbody>
-        </table>
+            </CardGroup>
+        </Container>
     )
 }
