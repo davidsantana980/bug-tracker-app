@@ -46,7 +46,7 @@ class IssueCards extends Component {
                     <Card key={index}>
                         <Card.Body>
                             <Card.Title>{issueAndCount[0]}</Card.Title>
-                            <Card.Text>{issueAndCount[1]} issues</Card.Text>
+                            <Card.Subtitle className="mb-2 text-muted">{issueAndCount[1]} issues</Card.Subtitle>
                             <LinkContainer to={`/see-issues`} state={{project : issueAndCount[0]}}>
                                 <Card.Link><Button>See all issues</Button></Card.Link>
                             </LinkContainer>

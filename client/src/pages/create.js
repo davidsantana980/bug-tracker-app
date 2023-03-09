@@ -1,4 +1,4 @@
-import { Container, Form, Button } from "react-bootstrap";
+import { Container, Form, Button, FormGroup } from "react-bootstrap";
 import {useState} from "react";
 
 export default function CreateIssueForm(){
@@ -10,6 +10,8 @@ export default function CreateIssueForm(){
       assigned_to: "", 
       status_text: ""
     });
+
+    const [validated, setValidated] = useState(false);
   
     const handleChange = (event) => {
       const inputName = event.target.name
@@ -22,7 +24,14 @@ export default function CreateIssueForm(){
     }
   
     const handleSubmit = (event) => {
-      event.preventDefault()
+      const form = event.currentTarget;
+      if (form.checkValidity() === false) {
+        event.preventDefault();
+        event.stopPropagation();
+        return
+      }
+      
+      setValidated(true)
       fetch(`http://localhost:5000/api/issues`, {
         method: "POST", // or 'PUT'
         headers: {
@@ -39,14 +48,26 @@ export default function CreateIssueForm(){
   
     return (
         <Container>
-            <Form id="testForm">
+            <Form id="testForm" validated={validated}>
                 <Form.Label>Submit new issue to database</Form.Label>
-                <Form.Control value={state.issue_project} onChange={handleChange} type="text" name="issue_project" placeholder="Project of which an issue is to be submitted"/>
-                <Form.Control value={state.issue_title} onChange={handleChange} type="text" name="issue_title" placeholder="*Title" required=''/>
-                <Form.Control value={state.issue_text} onChange={handleChange} as="textarea" name="issue_text" placeholder="*Text" required=''/>
-                <Form.Control value={state.created_by} onChange={handleChange} type="text" name="created_by" placeholder="*Created by" required=''/>
-                <Form.Control value={state.assigned_to} onChange={handleChange} type="text" name="assigned_to" placeholder="(opt)Assigned to"/>
-                <Form.Control value={state.status_text} onChange={handleChange} type="text" name="status_text" placeholder="(opt)Status text"/>
+                <FormGroup>
+                  <Form.Control required value={state.issue_project} onChange={handleChange} type="text" name="issue_project" placeholder="Project of which an issue is to be submitted"/>
+                </FormGroup>
+                <FormGroup>
+                  <Form.Control required value={state.issue_title} onChange={handleChange} type="text" name="issue_title" placeholder="*Title" />
+                </FormGroup>   
+                <FormGroup>
+                  <Form.Control required value={state.issue_text} onChange={handleChange} as="textarea" name="issue_text" placeholder="*Text" />
+                </FormGroup>  
+                <FormGroup>
+                  <Form.Control required value={state.created_by} onChange={handleChange} type="text" name="created_by" placeholder="*Created by" />
+                </FormGroup>  
+                <FormGroup>
+                  <Form.Control value={state.assigned_to} onChange={handleChange} type="text" name="assigned_to" placeholder="(opt)Assigned to"/>
+                </FormGroup>      
+                <FormGroup>
+                  <Form.Control value={state.status_text} onChange={handleChange} type="text" name="status_text" placeholder="(opt)Status text"/>
+                </FormGroup>     
                 <Button type="submit" onClick={handleSubmit}>Submit Issue</Button>
             </Form>
         </Container>

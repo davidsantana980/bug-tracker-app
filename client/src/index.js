@@ -21,6 +21,9 @@ function CustomNavbar() {
             <LinkContainer to="/search">
               <Nav.Link>Search</Nav.Link>
             </LinkContainer>
+            <LinkContainer to="/create">
+              <Nav.Link>Add issue</Nav.Link>
+            </LinkContainer>
           </Nav>
         </Navbar.Collapse>
       </Container>
