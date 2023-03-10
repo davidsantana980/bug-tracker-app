@@ -1,5 +1,6 @@
-import { Card, Container, ListGroup } from "react-bootstrap";
+import { Button, Card, Container, ListGroup } from "react-bootstrap";
 import CardHeader from "react-bootstrap/esm/CardHeader";
+import { LinkContainer } from "react-router-bootstrap";
 import { useLocation } from "react-router-dom";
 
 
@@ -43,11 +44,19 @@ export default function Issue () {
     return (
         <Container fluid>
             <Card>
-                <CardHeader>Issue ID: {info._id}</CardHeader>
+                <CardHeader>
+                    Issue ID: <b>{info._id}</b>
+                    <LinkContainer to={`/update`}>
+                        <Card.Link>
+                            <Button size="sm" className="float-end">Update issue</Button>
+                        </Card.Link>
+                    </LinkContainer>
+                </CardHeader>
                 <Card.Body>
                     <Card.Title className="mb-3">{info.issue_title}</Card.Title>
-                    <Card.Subtitle className="mb-3 text-muted">
-                        <Card.Text>
+                    <hr/>
+                    <Card.Subtitle className="mb-3 text-muted mt-2">
+                        <Card.Text as="div">
                             Created by <b>{info.created_by}</b> on: {info.created_on}
                             <OptionalAssignment/>
                         </Card.Text>
@@ -58,7 +67,6 @@ export default function Issue () {
                     </Card.Text>
                 </Card.Body>
                 <ListGroup className="list-group-flush">
-                    {/* <ListGroup.Item>Created on: {info.created_on}</ListGroup.Item> */}
                     <ListGroup.Item>Status: {info.open ? "In progress" : "Closed"}</ListGroup.Item>
                 </ListGroup>
                 <Card.Footer>Last updated: {info.updated_on}</Card.Footer>

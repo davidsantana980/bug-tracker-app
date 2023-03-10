@@ -1,6 +1,8 @@
 import { Component } from "react";
 import { Container, Card, CardGroup, Button } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
+// import GetIssueForm from './search.js';
+
 
 class IssueCards extends Component {
     
@@ -50,6 +52,12 @@ class IssueCards extends Component {
                             <LinkContainer to={`/see-issues`} state={{project : issueAndCount[0]}}>
                                 <Card.Link><Button>See all issues</Button></Card.Link>
                             </LinkContainer>
+                            {/* <LinkContainer to={`/rename-project`} state={{project : issueAndCount[0]}}>
+                                <Card.Link><Button variant="secondary">Rename</Button></Card.Link>
+                            </LinkContainer>
+                            <LinkContainer to={`/delete-project`} state={{project : issueAndCount[0]}}>
+                                <Card.Link><Button variant="danger">Delete all project issues</Button></Card.Link>
+                            </LinkContainer> */}
                         </Card.Body>
                     </Card>
                 </Container>
@@ -57,11 +65,14 @@ class IssueCards extends Component {
         }) 
 
         return(
-            <Container>
-                <CardGroup>
-                    {headerCards}
-                </CardGroup>
-            </Container>
+            <>
+                <Container fluid>
+                    <CardGroup>
+                        {headerCards}
+                    </CardGroup>
+                </Container>
+                {/* <GetIssueForm/> */}
+            </>
        )
     }
 }

@@ -1,7 +1,30 @@
 import { useState, useEffect } from "react"
-import { Button, Card, CardGroup, Container } from "react-bootstrap"
+import { Button, Card, CardGroup, Container, Modal } from "react-bootstrap"
 import { LinkContainer } from "react-router-bootstrap"
 import { useLocation } from "react-router-dom"
+
+let WarningModal = (props) => {
+    return (
+        <Modal
+          {...props}
+          size="lg"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title-vcenter">
+              Do you really want to delete this issue?
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Footer>
+            <Button onClick={props.onHide}>Close</Button>
+            <LinkContainer to={`/delete`} state={{_id : props._id, project : props.project}}>
+                <Card.Link><Button variant="danger">Delete issue</Button></Card.Link>
+            </LinkContainer> 
+          </Modal.Footer>
+        </Modal>
+    )
+} 
 
 export default function IssueList(){
     const [state, changeState] = useState({
@@ -10,7 +33,11 @@ export default function IssueList(){
         message : ""
     })
 
+    const [modal, setModal] = useState({show: false, _id: "", project: ""});
+
+    //get query params from location reference
     let {state : params} = useLocation()
+    //copy params
     let queryParams = {...params}
     
     //delete undefined body parameters EXCEPT FOR "open", which is a boolean and can be falsy
@@ -36,25 +63,35 @@ export default function IssueList(){
                 message : "Issue not found"
             })
         })  
-    })
+    }, [state.dataIsLoaded, url])
 
     if(state.dataIsLoaded){
         let issueCards = state.issueList.map((issue, index) => {
             return (
-                <Container className="col-md-12 col-lg-8 mt-2" key={index}>
-                    <Card key={index} className="text-center">
-                        <Card.Body>
-                            <Card.Title>{issue.issue_title}</Card.Title>
-                            <Card.Subtitle className="mb-2 text-muted">{issue.status_text ? `Status: ${issue.status_text}` : ""}</Card.Subtitle>
-    
-                            <Card.Text>{issue.issue_text ? issue.issue_text : "Click button for more details"}</Card.Text>
-    
-                            <LinkContainer to={`/issue`} state={issue}>
-                                <Card.Link><Button>See issue details</Button></Card.Link>
-                            </LinkContainer>
-                        </Card.Body>
-                    </Card>
-                </Container>
+                <>
+                    <Container className="col-md-12 col-lg-8 mt-2" key={index}>
+                        <Card key={index} className="text-center">
+                            <Card.Body>
+                                <Card.Title>{issue.issue_title}</Card.Title>
+                                <Card.Subtitle className="mb-2 text-muted">{issue.status_text ? `Status: ${issue.status_text}` : ""}</Card.Subtitle>
+        
+                                <Card.Text>{issue.issue_text ? issue.issue_text : "Click button for more details"}</Card.Text>
+        
+                                <LinkContainer to={`/issue`} state={issue}>
+                                    <Card.Link><Button>See issue details</Button></Card.Link>
+                                </LinkContainer>
+
+                                <Card.Link><Button onClick={() => setModal({show: true, _id : issue._id, project: issue.project})} variant="danger">Delete issue</Button></Card.Link>
+                            </Card.Body>
+                        </Card>
+                    </Container>
+                    <WarningModal 
+                        show={modal.show}
+                        onHide={() => setModal({show :false})}
+                        _id={modal._id} 
+                        project={modal.project}
+                    />
+                </>
             )
         })
 
