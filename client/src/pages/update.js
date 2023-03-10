@@ -1,15 +1,21 @@
 import {  Container, Form, Button } from "react-bootstrap";
 import {useState} from "react";
+import { useLocation, useNavigate } from "react-router-dom"
 
 export default function UpdateIssueForm(){
+    let {state : info} = useLocation()
+    let navigate = useNavigate()
+
+
     const [state, setState] = useState({
-      _id: "",
-      issue_title: "",
-      issue_text: "", 
-      created_by: "",
-      assigned_to: "", 
-      status_text: "",
-      open: undefined
+      _id: "" || info._id,
+      issue_title: "" || info.issue_title,
+      issue_text: "" || info.issue_text, 
+      created_by: "" || info.created_by,
+      assigned_to: "" || info.assigned_to, 
+      status_text: ""|| info.status_text,
+      open: undefined || info.open,
+      ...info
     });
   
     const handleChange = (event) => {
@@ -39,7 +45,7 @@ export default function UpdateIssueForm(){
         body: JSON.stringify(state)
       })
       .then((res) =>  res.json())
-      .then(result => console.log(result)) 
+      .then(result => navigate("/issue", {state: state})) 
       .catch(error => {
         console.log(error)
       })

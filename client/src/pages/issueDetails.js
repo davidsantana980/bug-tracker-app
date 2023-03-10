@@ -1,25 +1,35 @@
-import { Button, Card, Container, ListGroup } from "react-bootstrap";
+import { useState } from "react";
+import { Button, ButtonGroup, Card, Container, ListGroup, Modal } from "react-bootstrap";
 import CardHeader from "react-bootstrap/esm/CardHeader";
 import { LinkContainer } from "react-router-bootstrap";
 import { useLocation } from "react-router-dom";
 
+let WarningModal = (props) => {
+    return (
+        <Modal
+          {...props}
+          size="lg"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title-vcenter">
+              Do you really want to delete this issue?
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Footer>
+            <Button onClick={props.onHide}>Close</Button>
+            <LinkContainer to={`/delete`} state={{_id : props._id, project : props.project}}>
+                <Card.Link><Button variant="danger">Delete issue</Button></Card.Link>
+            </LinkContainer> 
+          </Modal.Footer>
+        </Modal>
+    )
+} 
 
 export default function Issue () {
     let {state : info} = useLocation()
-
-    // let info = {
-    //         "_id": "6399def2b8de7be5d8451ae2",
-    //         "project": "apitest",
-    //         "issue_title": "Test",
-    //         "issue_text": "Text",
-    //         "created_on": "Wed Dec 14 2022 10:34:26 GMT-0400 (hora de Venezuela)",
-    //         "updated_on": "Wed Dec 14 2022 10:34:25 GMT-0400 (hora de Venezuela)",
-    //         "created_by": "Salvador",
-    //         "assigned_to": "Sabrina",
-    //         "open": true,
-    //         "status_text": "191",
-    //         "__v": 0
-    //     }
+    const [modal, setModal] = useState({show: false, _id: "", project: ""});
 
     if(!info){
         return (
@@ -42,35 +52,44 @@ export default function Issue () {
     }
     
     return (
-        <Container fluid>
-            <Card>
-                <CardHeader>
-                    Issue ID: <b>{info._id}</b>
-                    <LinkContainer to={`/update`}>
-                        <Card.Link>
-                            <Button size="sm" className="float-end">Update issue</Button>
-                        </Card.Link>
-                    </LinkContainer>
-                </CardHeader>
-                <Card.Body>
-                    <Card.Title className="mb-3">{info.issue_title}</Card.Title>
-                    <hr/>
-                    <Card.Subtitle className="mb-3 text-muted mt-2">
-                        <Card.Text as="div">
-                            Created by <b>{info.created_by}</b> on: {info.created_on}
-                            <OptionalAssignment/>
+        <>
+            <Container fluid>
+                <Card>
+                    <CardHeader>
+                        Issue ID: <b>{info._id}</b>
+                        <ButtonGroup className="float-end">
+                            <Button onClick={() => setModal({show: true, _id : info._id, project: info.project})} variant="danger" size="sm" >Delete issue</Button>
+                            <LinkContainer to={`/update`} state={info} variant="secondary" size="sm">
+                                <Button>Update issue</Button>
+                            </LinkContainer>
+                        </ButtonGroup>
+                    </CardHeader>
+                    <Card.Body>
+                        <Card.Title className="mb-3">{info.issue_title}</Card.Title>
+                        <hr/>
+                        <Card.Subtitle className="mb-3 text-muted mt-2">
+                            <Card.Text as="div">
+                                Created by <b>{info.created_by}</b> on: {info.created_on}
+                                <OptionalAssignment/>
+                            </Card.Text>
+                        </Card.Subtitle>
+                        <hr/>
+                        <Card.Text>
+                            Explanation: {info.issue_text}
                         </Card.Text>
-                    </Card.Subtitle>
-                    <hr/>
-                    <Card.Text>
-                        Explanation: {info.issue_text}
-                    </Card.Text>
-                </Card.Body>
-                <ListGroup className="list-group-flush">
-                    <ListGroup.Item>Status: {info.open ? "In progress" : "Closed"}</ListGroup.Item>
-                </ListGroup>
-                <Card.Footer>Last updated: {info.updated_on}</Card.Footer>
-            </Card>
-        </Container>
+                    </Card.Body>
+                    <ListGroup className="list-group-flush">
+                        <ListGroup.Item>Status: {info.open ? "In progress" : "Closed"}</ListGroup.Item>
+                    </ListGroup>
+                    <Card.Footer>Last updated: {info.updated_on}</Card.Footer>
+                </Card>
+            </Container>
+            <WarningModal 
+                show={modal.show}
+                onHide={() => setModal({show :false})}
+                _id={modal._id} 
+                project={modal.project}
+            />
+        </>
     )
 }
