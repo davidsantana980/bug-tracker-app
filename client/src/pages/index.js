@@ -1,7 +1,7 @@
 import { Component } from "react";
-import { Container, Card, CardGroup, Button } from "react-bootstrap";
+import { Container, Card, CardGroup, Button, Row, Col } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-// import GetIssueForm from './search.js';
+import GetIssueForm from './search.js';
 
 
 class IssueCards extends Component {
@@ -65,14 +65,20 @@ class IssueCards extends Component {
         }) 
 
         return(
-            <>
-                <Container fluid>
-                    <CardGroup>
-                        {headerCards}
-                    </CardGroup>
-                </Container>
-                {/* <GetIssueForm/> */}
-            </>
+            <Container>
+                <Row>
+                    <Col lg={8}>
+                        <Container fluid>
+                            <CardGroup>
+                                {headerCards}
+                            </CardGroup>
+                        </Container>
+                    </Col>
+                    <Col>
+                        <GetIssueForm/>
+                    </Col>
+                </Row>
+            </Container>
        )
     }
 }

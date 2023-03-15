@@ -40,10 +40,28 @@ export default function IssueList(){
         })  
     }, [state.dataIsLoaded, url])
 
+    function closeIssue(state){
+        fetch(`http://localhost:5000/api/issues/`, {
+            method: "PUT", // or 'PUT'
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify(state)
+        })
+        .then((res) =>  res.json())
+        .then(() => {
+            //change this
+            window.location.reload()
+        }) 
+        .catch(error => {
+            console.log(error)
+        })
+    }
+    
+
     if(state.dataIsLoaded){
         let issueCards = state.issueList.map((issue, index) => {
             return (
-                <>
                     <Container fluid key={index} className="mb-2">
                         <Card key={index} className="text-center">
                             <Card.Body>
@@ -54,8 +72,10 @@ export default function IssueList(){
                                 <Card.Text><Badge pill bg="success">{!issue.open ? `This issue is solved!` : ""}</Badge></Card.Text>
         
                                 <LinkContainer to={`/issue`} state={issue}>
-                                    <Card.Link><Button variant="info">See issue details</Button></Card.Link>
+                                    <Card.Link><Button variant="dark">See issue details</Button></Card.Link>
                                 </LinkContainer>
+
+                                <Card.Link><Button as="input" readOnly value={issue.open ? "Close issue" : "Re-open issue"} onClick={() => closeIssue({_id: issue._id , open: !issue.open})}  variant={issue.open ? "success" : "primary"}/></Card.Link>
 
                                 <LinkContainer to={`/update`} state={issue}>
                                     <Card.Link><Button variant="secondary">Update issue</Button></Card.Link>
@@ -63,7 +83,6 @@ export default function IssueList(){
                              </Card.Body>
                         </Card>
                     </Container>
-                </>
             )
         })
 
