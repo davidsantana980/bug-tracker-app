@@ -27,6 +27,19 @@ let WarningModal = (props) => {
     )
 } 
 
+let ReturnButton = (props) => {
+    return (
+        <Container className="d-grid mt-3">
+            <LinkContainer to={`/see-issues`} state={{project : props.project}}>
+                <Button variant="primary" size="lg">
+                    Go back to project menu
+                </Button>
+            </LinkContainer> 
+        </Container>
+    )
+}
+
+
 export default function Issue () {
     let {state : info} = useLocation()
     const [modal, setModal] = useState({show: false, _id: "", project: ""});
@@ -53,7 +66,7 @@ export default function Issue () {
     
     return (
         <>
-            <Container fluid>
+            <Container >
                 <Card>
                     <CardHeader>
                         Issue ID: <b>{info._id}</b>
@@ -83,6 +96,7 @@ export default function Issue () {
                     </ListGroup>
                     <Card.Footer>Last updated: {info.updated_on}</Card.Footer>
                 </Card>
+                <ReturnButton project={info.project}/>
             </Container>
             <WarningModal 
                 show={modal.show}

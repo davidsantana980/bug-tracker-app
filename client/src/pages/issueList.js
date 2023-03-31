@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react"
-import { Badge, Button, Card, CardGroup, Container } from "react-bootstrap"
+import { Badge, Button, ButtonGroup, Card, CardGroup, Container } from "react-bootstrap"
 import { LinkContainer } from "react-router-bootstrap"
 import { useLocation } from "react-router-dom"
 
@@ -68,24 +68,26 @@ export default function IssueList(){
                     <Container fluid key={index} className="mb-2">
                         <Card key={index} className="text-center">
                             <Card.Body>
-                                <Card.Title>{issue.issue_title}</Card.Title>
+                                <Card.Title><b>Issue title:</b> {issue.issue_title}</Card.Title>
                                 <Card.Subtitle className="mb-2 text-muted">{issue.status_text ? `Status: ${issue.status_text}` : ""}</Card.Subtitle>
 
                                 <Card.Text>{issue.issue_text ? `Summary: ${issue.issue_text}` : "Click button for more details"}</Card.Text>
                                 <Card.Text><Badge pill bg="success">{!issue.open ? `This issue is solved!` : ""}</Badge></Card.Text>
-        
-                                <LinkContainer to={`/issue`} state={issue}>
-                                    <Card.Link><Button variant="dark">See issue details</Button></Card.Link>
-                                </LinkContainer>
 
-                                <Card.Link>
-                                    <Button as="input" readOnly value={issue.open ? "Close issue" : "Re-open issue"} onClick={() => closeIssue({_id: issue._id , open: !issue.open})}  variant={issue.open ? "success" : "primary"}/>
-                                </Card.Link>
+                                <ButtonGroup>
+                                    <LinkContainer to={`/issue`} state={issue}>
+                                        <Card.Link><Button variant="dark">See issue details</Button></Card.Link>
+                                    </LinkContainer>
 
-                                <LinkContainer to={`/update`} state={issue}>
-                                    <Card.Link><Button variant="secondary">Update issue</Button></Card.Link>
-                                </LinkContainer>
-                             </Card.Body>
+                                    <Card.Link>
+                                        <Button as="input" readOnly value={issue.open ? "Close issue" : "Re-open issue"} onClick={() => closeIssue({_id: issue._id , open: !issue.open})}  variant={issue.open ? "success" : "primary"}/>
+                                    </Card.Link>
+
+                                    <LinkContainer to={`/update`} state={issue}>
+                                        <Card.Link><Button variant="secondary">Update issue</Button></Card.Link>
+                                    </LinkContainer>
+                                </ButtonGroup>
+                            </Card.Body>
                         </Card>
                     </Container>
             )

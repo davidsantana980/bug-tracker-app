@@ -37,7 +37,7 @@ root.render(
     <BrowserRouter>
       <CustomNavbar />
       <AppRoutes />
-      <footer id="footer" className="mt-3 py-2 bg-dark text-white-50">
+      <footer id="footer" className="fixed-bottom mt-3 py-2 bg-dark text-white-50">
           <Container className="text-start">
               Salvador Ochoa, 2022
           </Container>

@@ -1,6 +1,19 @@
 import {  Container, Form, Button } from "react-bootstrap";
 import {useState} from "react";
 import { useLocation, useNavigate } from "react-router-dom"
+import { LinkContainer } from "react-router-bootstrap";
+
+let ReturnButton = (props) => {
+  return (
+      <Container className="d-grid mt-3">
+          <LinkContainer to={`/see-issues`} state={{project : props.project}}>
+              <Button variant="primary" size="lg">
+                  Go back to project menu
+              </Button>
+          </LinkContainer> 
+      </Container>
+  )
+}
 
 export default function UpdateIssueForm(){
     let {state : info} = useLocation()
@@ -56,8 +69,11 @@ export default function UpdateIssueForm(){
                 <Form.Control value={state.created_by} onChange={handleChange} type="text" name="created_by" placeholder="(opt)Created by" required=''/>
                 <Form.Control value={state.assigned_to} onChange={handleChange} type="text" name="assigned_to" placeholder="(opt)Assigned to" />
                 <Form.Control value={state.status_text} onChange={handleChange} type="text" name="status_text" placeholder="(opt)Status text" />
-                <Button onClick={handleSubmit} type="submit">Submit Issue</Button>
+                <Container className="d-grid mt-3">
+                  <Button variant="primary" size="lg" onClick={handleSubmit} type="submit">Submit Issue</Button>
+                </Container>
             </Form>
+            <ReturnButton project={state.project}/>
         </Container>
     )
   }
