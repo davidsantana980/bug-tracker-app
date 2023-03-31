@@ -71,7 +71,13 @@ export default function IssueList(){
                                 <Card.Title><b>Issue title:</b> {issue.issue_title}</Card.Title>
                                 <Card.Subtitle className="mb-2 text-muted">{issue.status_text ? `Status: ${issue.status_text}` : ""}</Card.Subtitle>
 
-                                <Card.Text>{issue.issue_text ? `Summary: ${issue.issue_text}` : "Click button for more details"}</Card.Text>
+                                <Card.Text>
+                                    {issue.issue_text ? (
+                                        <span><b>Summary:</b> {issue.issue_text}</span>
+                                    ) : (
+                                        "Click button for more details"
+                                    )}
+                                </Card.Text>
                                 <Card.Text><Badge pill bg="success">{!issue.open ? `This issue is solved!` : ""}</Badge></Card.Text>
 
                                 <ButtonGroup>
@@ -95,7 +101,7 @@ export default function IssueList(){
 
         
         return (
-            <Container className="col-md-12 col-lg-8 mt-2" >
+            <Container className="col-md-12 col-lg-8 mt-2 mb-5" >
                 <CardGroup>
                     {issueCards}
                 </CardGroup>

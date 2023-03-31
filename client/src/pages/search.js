@@ -35,7 +35,7 @@ export default function GetIssueForm() {
     }
   
     return (
-    <Container>
+    <Container className="mt-2">
         <Form>
             <Form.Label>Get all issues in a project, or specify with extra fields</Form.Label>
             <Form.Control value={projectObj.project} onChange={handleChange} type="text" placeholder="Project name" name='project' />
@@ -45,9 +45,9 @@ export default function GetIssueForm() {
             <Form.Control value={projectObj.created_by} onChange={handleChange} type="text" name="created_by" placeholder="(opt)Created by" required=''/>
             <Form.Control value={projectObj.assigned_to} onChange={handleChange} type="text" name="assigned_to" placeholder="(opt)Assigned to" />
             <Form.Control value={projectObj.status_text} onChange={handleChange} type="text" name="status_text" placeholder="(opt)Status text" />
-            <Form.Check value={projectObj.open} onChange={handleCheck} name="open" type='checkbox' label="Are the issues closed?"/>      
+            <Form.Check value={projectObj.open} className="mt-2" onChange={handleCheck} name="open" type='checkbox' label="Are the issues closed?"/>      
             <LinkContainer to="/see-issues" state={projectObj}>  
-              <Button variant="primary" type="submit">Submit</Button>
+              <Button variant="primary" className="mt-2" type="submit">Search</Button>
             </LinkContainer>
         </Form>
     </Container>

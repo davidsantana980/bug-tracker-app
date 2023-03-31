@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { Container, Card, CardGroup, Button, Row, Col } from "react-bootstrap";
+import { Container, Card, CardGroup, Button, Row, Col, Badge, ButtonGroup, ButtonToolbar } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import GetIssueForm from './search.js';
 
@@ -36,6 +36,8 @@ class IssueCards extends Component {
         } 
 
         let uniqueProjectArray = [...new Set(this.state.issues.map(obj => obj.project))];
+        let issueCreatorsArray = [...new Set(this.state.issues.map(obj => obj.created_by))];
+        let issueAssignmentsArray = [...new Set(this.state.issues.map(obj => obj.assigned_to))];
 
         let issueAndCountPair = {};
         for(let project of uniqueProjectArray){
@@ -64,8 +66,26 @@ class IssueCards extends Component {
             )
         }) 
 
+        let UserList = () => issueCreatorsArray.map(name => {
+            return (
+                <Button variant="primary" size="sm">
+                    {name} 
+                    <Badge bg="secondary">9</Badge>
+                </Button>
+              );            
+        });
+
+        let AssignmentsList = () => issueAssignmentsArray.map(name => {
+            return (
+                <Button variant="primary" size="sm">
+                    {name} 
+                    <Badge bg="secondary">9</Badge>
+                </Button>
+              );            
+        });
+
         return(
-            <Container>
+            <Container className="mb-5">
                 <Row>
                     <Col lg={8}>
                         <Container fluid>
@@ -74,8 +94,13 @@ class IssueCards extends Component {
                             </CardGroup>
                         </Container>
                     </Col>
-                    <Col>
+                    <Col lg={4}>
                         <GetIssueForm/>
+                        {/* <ButtonToolbar className="justify-content-between">
+                            <ButtonGroup size="sm" >
+                                <UserList />
+                            </ButtonGroup>
+                        </ButtonToolbar> */}
                     </Col>
                 </Row>
             </Container>

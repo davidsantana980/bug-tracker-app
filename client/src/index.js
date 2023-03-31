@@ -10,7 +10,7 @@ import {LinkContainer} from "react-router-bootstrap"
 
 function CustomNavbar() {
   return (
-    <Navbar expand="lg" sticky="top" bg="dark" variant='dark' className='mb-3'>
+    <Navbar expand="lg" sticky="top" bg="dark" variant='dark' className='mb-2'>
       <Container>
         <LinkContainer to="/">
           <Navbar.Brand>Issue Tracker</Navbar.Brand>
