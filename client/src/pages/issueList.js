@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Badge, Button, Card, CardGroup, Container } from "react-bootstrap"
 import { LinkContainer } from "react-router-bootstrap"
 import { useLocation } from "react-router-dom"
@@ -22,7 +22,7 @@ export default function IssueList(){
     
     let url = `http://localhost:5000/api/issues?${new URLSearchParams(queryParams).toString()}` 
 
-    useEffect(() => {
+    let loadItems = useCallback(() => {
         fetch(url)
         .then((res) => res.json()) //take the response string and turn it into a json array
         .then((json) => { //take the json array from the previous step...
@@ -38,11 +38,15 @@ export default function IssueList(){
                 message : "Issue not found"
             })
         })  
-    }, [state.dataIsLoaded, url])
+    }, [url])
+
+    useEffect(() => {
+        return loadItems
+    }, [state.dataIsLoaded, url, loadItems])
 
     function closeIssue(state){
         fetch(`http://localhost:5000/api/issues/`, {
-            method: "PUT", // or 'PUT'
+            method: "PUT",
             headers: {
             "Content-Type": "application/json",
             },
@@ -50,8 +54,7 @@ export default function IssueList(){
         })
         .then((res) =>  res.json())
         .then(() => {
-            //change this
-            window.location.reload()
+            loadItems()
         }) 
         .catch(error => {
             console.log(error)
@@ -75,7 +78,9 @@ export default function IssueList(){
                                     <Card.Link><Button variant="dark">See issue details</Button></Card.Link>
                                 </LinkContainer>
 
-                                <Card.Link><Button as="input" readOnly value={issue.open ? "Close issue" : "Re-open issue"} onClick={() => closeIssue({_id: issue._id , open: !issue.open})}  variant={issue.open ? "success" : "primary"}/></Card.Link>
+                                <Card.Link>
+                                    <Button as="input" readOnly value={issue.open ? "Close issue" : "Re-open issue"} onClick={() => closeIssue({_id: issue._id , open: !issue.open})}  variant={issue.open ? "success" : "primary"}/>
+                                </Card.Link>
 
                                 <LinkContainer to={`/update`} state={issue}>
                                     <Card.Link><Button variant="secondary">Update issue</Button></Card.Link>

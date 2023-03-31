@@ -14,7 +14,6 @@ export default function UpdateIssueForm(){
       created_by: "" || info.created_by,
       assigned_to: "" || info.assigned_to, 
       status_text: ""|| info.status_text,
-      open: undefined || info.open,
       ...info
     });
   
@@ -28,15 +27,9 @@ export default function UpdateIssueForm(){
       });
     }
   
-    const handleCheck = () => {
-      setState({
-        ...state,
-        open : state.open === undefined ? false : !state.open
-      })    
-    }
-  
     const handleSubmit = (event) => {
-      event.preventDefault()
+      event.preventDefault();
+
       fetch(`http://localhost:5000/api/issues/`, {
         method: "PUT", // or 'PUT'
         headers: {
@@ -45,7 +38,9 @@ export default function UpdateIssueForm(){
         body: JSON.stringify(state)
       })
       .then((res) =>  res.json())
-      .then(result => navigate("/issue", {state: state})) 
+      .then(result => {
+        return navigate("/issue", {state: result})
+      }) 
       .catch(error => {
         console.log(error)
       })
@@ -61,7 +56,6 @@ export default function UpdateIssueForm(){
                 <Form.Control value={state.created_by} onChange={handleChange} type="text" name="created_by" placeholder="(opt)Created by" required=''/>
                 <Form.Control value={state.assigned_to} onChange={handleChange} type="text" name="assigned_to" placeholder="(opt)Assigned to" />
                 <Form.Control value={state.status_text} onChange={handleChange} type="text" name="status_text" placeholder="(opt)Status text" />
-                <Form.Check value={state.open} onChange={handleCheck} name="open" type='checkbox' label="Check to close issue"/>
                 <Button onClick={handleSubmit} type="submit">Submit Issue</Button>
             </Form>
         </Container>

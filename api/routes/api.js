@@ -46,7 +46,7 @@ module.exports = function (app) {
   })
     
   app.post('/api/issues', async (req, res) => {
-    let date = new Date().toISOString().split('T')[0];
+    let date = new Date();
 
     let doc = {
       project: req.body.issue_project,
@@ -96,7 +96,7 @@ module.exports = function (app) {
         if(!data || err){
           return res.json({ error: "could not update", _id: req.body._id })
         }
-        return res.json({ result: 'successfully updated', '_id': req.body._id})
+        return res.json(data);
       }).clone();
     }catch(error){
       return 0//console.log(error)
