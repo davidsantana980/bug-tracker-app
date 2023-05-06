@@ -19,7 +19,7 @@ function CustomNavbar() {
         <Navbar.Collapse id= "basic-navbar-nav">
           <Nav>
             <LinkContainer to="/search">
-              <Nav.Link>Search</Nav.Link>
+              <Nav.Link>Search issue</Nav.Link>
             </LinkContainer>
             <LinkContainer to="/create">
               <Nav.Link>Add issue</Nav.Link>

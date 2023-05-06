@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { Container, Card, CardGroup, Button, Row, Col, Badge, ButtonGroup, ButtonToolbar } from "react-bootstrap";
+import { Container, Card, CardGroup, Button, Row, Col, Badge } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import GetIssueForm from './search.js';
 
@@ -25,6 +25,17 @@ class IssueCards extends Component {
         })  
     }
 
+    uniqueByProp(prop){
+        let uniqueByPropArray = [...new Set(this.state.issues.map(obj => obj[prop]))];
+
+        let issueAndCountPair = {};
+        for(let propName of uniqueByPropArray){
+            issueAndCountPair[propName] = this.state.issues.filter(issue => issue[prop] === propName).length
+        }
+
+        return Object.entries(issueAndCountPair);
+    }
+
     render() {
 
         if(!this.state.dataIsLoaded){
@@ -35,16 +46,9 @@ class IssueCards extends Component {
             )
         } 
 
-        let uniqueProjectArray = [...new Set(this.state.issues.map(obj => obj.project))];
-        let issueCreatorsArray = [...new Set(this.state.issues.map(obj => obj.created_by))];
-        let issueAssignmentsArray = [...new Set(this.state.issues.map(obj => obj.assigned_to))];
+        let projectAndIssueCountPair = this.uniqueByProp("project");
 
-        let issueAndCountPair = {};
-        for(let project of uniqueProjectArray){
-            issueAndCountPair[project] = this.state.issues.filter(issue => issue.project === project).length
-        }
-
-        let headerCards = Object.entries(issueAndCountPair).map((issueAndCount, index) => {
+        let headerCards = projectAndIssueCountPair.map((issueAndCount, index) => {
             return(
                 <Container className="col-md-12 col-lg-6 mt-2" key={issueAndCount[0]}>
                     <Card key={index}>
@@ -54,38 +58,48 @@ class IssueCards extends Component {
                             <LinkContainer to={`/see-issues`} state={{project : issueAndCount[0]}}>
                                 <Card.Link><Button>See all issues</Button></Card.Link>
                             </LinkContainer>
-                            {/* <LinkContainer to={`/rename-project`} state={{project : issueAndCount[0]}}>
-                                <Card.Link><Button variant="secondary">Rename</Button></Card.Link>
-                            </LinkContainer>
-                            <LinkContainer to={`/delete-project`} state={{project : issueAndCount[0]}}>
-                                <Card.Link><Button variant="danger">Delete all project issues</Button></Card.Link>
-                            </LinkContainer> */}
                         </Card.Body>
                     </Card>
                 </Container>
             )
         }) 
 
-        let UserList = () => issueCreatorsArray.map(name => {
+        let creatorAndCountPair = this.uniqueByProp("project");
+        let UserList = () => creatorAndCountPair.map((nameAndCount, index) => {
             return (
-                <Button variant="primary" size="sm">
-                    {name} 
-                    <Badge bg="secondary">9</Badge>
-                </Button>
+                <Badge pill as="button" bg="info">
+                    {/* <Button size="sm" key={index}> */}
+                        {nameAndCount[0]} 
+                        <Badge bg="secondary">{nameAndCount[1]}</Badge>
+                    {/* </Button> */}
+                </Badge>
               );            
         });
 
-        let AssignmentsList = () => issueAssignmentsArray.map(name => {
+        let assignmentAndCountPair = this.uniqueByProp("assigned_to");
+        let AssignedList = () => assignmentAndCountPair.map((nameAndCount, index) => {
             return (
-                <Button variant="primary" size="sm">
-                    {name} 
-                    <Badge bg="secondary">9</Badge>
-                </Button>
+                <Badge pill as="button" bg="info">
+                    {/* <Button size="sm" key={index}> */}
+                        {nameAndCount[0]} 
+                        <Badge bg="secondary">{nameAndCount[1]}</Badge>
+                    {/* </Button> */}
+                </Badge>
               );            
         });
+
+
+        // let AssignmentsList = () => issueAssignmentsArray.map(name => {
+        //     return (
+        //         <Button variant="primary" size="sm">
+        //             {name} 
+        //             <Badge bg="secondary">9</Badge>
+        //         </Button>
+        //       );            
+        // });
 
         return(
-            <Container className="mb-5">
+            <Container fluid className="mb-5">
                 <Row>
                     <Col lg={8}>
                         <Container fluid>
@@ -96,11 +110,18 @@ class IssueCards extends Component {
                     </Col>
                     <Col lg={4}>
                         <GetIssueForm/>
-                        {/* <ButtonToolbar className="justify-content-between">
-                            <ButtonGroup size="sm" >
+                        <Container className="mt-3">
+                            {/* <ButtonToolbar className="justify-content-between"> */}
+                                {/* <ButtonGroup size="sm" > */}
+                                <h4>See issues by creator</h4>
                                 <UserList />
-                            </ButtonGroup>
-                        </ButtonToolbar> */}
+                                {/* </ButtonGroup> */}
+                            {/* </ButtonToolbar> */}
+                        </Container>
+                        <Container className="mt-3">
+                            <h4>See issues by assignment</h4>
+                            <AssignedList/>
+                        </Container>
                     </Col>
                 </Row>
             </Container>
