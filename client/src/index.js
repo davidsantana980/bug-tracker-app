@@ -1,19 +1,48 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import AppRoutes from './App';
 import reportWebVitals from './reportWebVitals';
-import { Navbar, Container } from 'react-bootstrap';
+
+import { BrowserRouter } from 'react-router-dom';
+import { Container,  Nav, Navbar } from "react-bootstrap";
+import {LinkContainer} from "react-router-bootstrap"
+
+function CustomNavbar() {
+  return (
+    <Navbar expand="lg" sticky="top" bg="dark" variant='dark' className='mb-2'>
+      <Container>
+        <LinkContainer to="/">
+          <Navbar.Brand>Issue Tracker</Navbar.Brand>
+        </LinkContainer>
+        <Navbar.Toggle aria-controls='basic-navbar-nav'/>
+        <Navbar.Collapse id= "basic-navbar-nav">
+          <Nav>
+            <LinkContainer to="/search">
+              <Nav.Link>Search</Nav.Link>
+            </LinkContainer>
+            <LinkContainer to="/create">
+              <Nav.Link>Add issue</Nav.Link>
+            </LinkContainer>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
+  )
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Navbar expand="lg" sticky="top" bg="dark" variant='dark' className='mb-3'>
-      <Container>
-        <Navbar.Brand href="#">Issue Tracker</Navbar.Brand>
-      </Container>
-    </Navbar>
-    <App />
+    <BrowserRouter>
+      <CustomNavbar />
+      <AppRoutes />
+      <footer id="footer" className="fixed-bottom mt-3 py-2 bg-dark text-white-50">
+          <Container className="text-start">
+              Salvador Ochoa, 2022
+          </Container>
+      </footer>
+    </BrowserRouter>
   </React.StrictMode>
 );
 
