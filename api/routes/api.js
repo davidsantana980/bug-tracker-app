@@ -35,7 +35,7 @@ module.exports = function (app) {
     Object.keys(queryParams).forEach(key => queryParams[key] === undefined ? delete queryParams[key] : {});
 
     //not gonna get all objects
-    if(Object.values(queryParams).length < 1) return res.json({ error: 'no get field(s) sent' })  
+    // if(Object.values(queryParams).length < 1) return res.json({ error: 'no get field(s) sent' })  
 
     try{
       let result = await readMany(queryParams);
