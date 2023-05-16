@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react"
 import { Badge, Button, ButtonGroup, Card, CardGroup, Container } from "react-bootstrap"
 import { LinkContainer } from "react-router-bootstrap"
 import { useLocation } from "react-router-dom"
+import CreateIssueForm from "./create"
 
 export default function IssueList(){
     const [state, changeState] = useState({
@@ -20,6 +21,7 @@ export default function IssueList(){
         return !queryParams[key] && typeof(queryParams[key]) !== "boolean" ? delete queryParams[key] : {}
     });
     
+    console.log(queryParams)
     let url = `http://localhost:5000/api/issues?${new URLSearchParams(queryParams).toString()}` 
 
     let loadItems = useCallback(() => {
@@ -61,6 +63,17 @@ export default function IssueList(){
         })
     }
     
+    function ReturnButton  (props) {
+        return (
+            <Container className="d-grid mt-3">
+                <LinkContainer to={`/`} >
+                    <Button variant="primary" size="lg">
+                        Go back to main menu
+                    </Button>
+                </LinkContainer> 
+            </Container>
+        )
+    }
 
     if(state.dataIsLoaded){
         let issueCards = state.issueList.map((issue, index) => {
@@ -99,14 +112,28 @@ export default function IssueList(){
             )
         })
 
+        //if the list issue is a project's...
+        if(Object.keys(queryParams).length === 1 && Object.keys(queryParams).pop() === "project"){
+            return (         
+                <Container className="col-md-12 col-lg-8 mt-2 mb-5" >
+                    <CreateIssueForm state={queryParams.project} />
+                    <CardGroup>
+                        {issueCards}
+                    </CardGroup>
+                    <ReturnButton/>
+                </Container>
+            )
+        }
         
         return (
             <Container className="col-md-12 col-lg-8 mt-2 mb-5" >
                 <CardGroup>
                     {issueCards}
                 </CardGroup>
+                <ReturnButton/>
             </Container>
         ) 
+
     }
 
     let message = "Please wait..."

@@ -28,25 +28,24 @@ class IssueCards extends Component {
     }
 
     uniqueProjectsByProp(prop){
-        let responsiveCount=false; // this variable sets if the total count will include projects with no open issues
-        if (prop === "project" || prop === "assigned_to") responsiveCount=true; 
-
         let uniqueByPropArray = [...new Set(this.state.allIssues.map(obj => obj[prop]))];
         let searchResults = [];
 
         const singleResult = {
             name: "",
-            count: 0
-        };
-          
+            openIssueCount: 0,
+            totalCount: 0
+        };          
 
         for(let propName of uniqueByPropArray){
-            let issueNameAndCountPair = Object.create(singleResult, {
+            let nameAndCounts = Object.create(singleResult, {
                 name: {value : propName},
-                count: {value : !responsiveCount ? this.state.allIssues.filter(issue => issue[prop] === propName).length : this.state.allIssues.filter(issue => issue.open && issue[prop] === propName).length}
+                //if the searched prop is a project or assignment list of issues, the count will be 1) the "open" amount of issues and 2) the total amount of issues for said prop. 
+                totalCount: {value :  this.state.allIssues.filter(issue => issue[prop] === propName).length },
+                openIssueCount : {value: this.state.allIssues.filter(issue => issue.open && issue[prop] === propName).length}
             });
 
-            searchResults.push(issueNameAndCountPair);
+            searchResults.push(nameAndCounts);
         }
 
         return searchResults;
@@ -65,15 +64,19 @@ class IssueCards extends Component {
         let ProjectCards = () => {
             let projectAndIssueCountPair = this.uniqueProjectsByProp("project");
 
+
             return projectAndIssueCountPair.map((project, index) => {
                 return(
                     <Container className="col-md-12 col-lg-6 mt-2" key={project.name}>
                         <Card key={index}>
                             <Card.Body>
                                 <Card.Title>{project.name}</Card.Title>
-                                <Card.Subtitle className="mb-2 text-muted">{project.count} open issue(s)</Card.Subtitle>
+                                <Card.Subtitle className="mb-2 text-muted">{project.openIssueCount} {project.openIssueCount === 1 ? "issue" : "issues"} in progress, {project.totalCount} total</Card.Subtitle>
                                 <LinkContainer to={`/see-issues`} state={{project : project.name}}>
                                     <Card.Link><Button>See all issues</Button></Card.Link>
+                                </LinkContainer>
+                                <LinkContainer to={`/delete`} state={{project : project.name}}>
+                                    <Card.Link><Button variant="danger">Delete project</Button></Card.Link>
                                 </LinkContainer>
                             </Card.Body>
                         </Card>
@@ -86,10 +89,10 @@ class IssueCards extends Component {
             let creatorAndCountPair = this.uniqueProjectsByProp("created_by");
             return creatorAndCountPair.map((creator, index) => {
                 return (
-                    <LinkContainer to={`/see-issues`} state={{created_by : creator.name}}> 
+                    <LinkContainer to={`/see-issues`} state={{created_by : creator.name}} key={index}> 
                         <Badge pill as="button" bg="info" key={index}>
                             {creator.name} 
-                            <Badge bg="secondary">{creator.count}</Badge>
+                            <Badge bg="secondary">{creator.totalCount}</Badge>
                         </Badge>
                     </LinkContainer> 
                 );            
@@ -97,15 +100,15 @@ class IssueCards extends Component {
         }
 
         let AssignedList = () => {
-            let assignmentAndCountPair = this.uniqueProjectsByProp("assigned_to").filter(project => !!project.count); //get only pending assignments
+            let assignmentAndCountPair = this.uniqueProjectsByProp("assigned_to").filter(project => !!project.openIssueCount); //get only pending assignments
 
             return assignmentAndCountPair.map((user, index) => {
                 return (
-                    <LinkContainer to={`/see-issues`} state={{assigned_to : user.name}}> 
+                    <LinkContainer to={`/see-issues`} state={{assigned_to : user.name}} key={index}> 
                         <Badge pill as="button" bg="info" key={index}>
                             {/* <Button size="sm" key={index}> */}
                                 {user.name} 
-                                <Badge bg="secondary">{user.count}</Badge>
+                                <Badge bg="secondary">{user.openIssueCount}</Badge>
                             {/* </Button> */}
                         </Badge>
                     </LinkContainer>

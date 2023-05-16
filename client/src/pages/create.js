@@ -1,9 +1,13 @@
 import { Container, Form, Button, FormGroup } from "react-bootstrap";
 import {useState} from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function CreateIssueForm(){
+    let {state : info} = useLocation()
+    let nav = useNavigate();
+
     const [state, setState] = useState({
-      issue_project: "",
+      issue_project: info.project,
       issue_title: "",
       issue_text: "", 
       created_by: "",
@@ -40,7 +44,7 @@ export default function CreateIssueForm(){
         body: JSON.stringify(state),
       })
       .then((res) => res.json())
-      .then(result => console.log(result)) 
+      .then(result => nav("/see-issues", {replace : true, state: {project : state.issue_project}}))
       .catch(error => {
         console.log(error)
       })
@@ -49,10 +53,7 @@ export default function CreateIssueForm(){
     return (
         <Container>
             <Form id="testForm" validated={validated}>
-                <Form.Label>Submit new issue to database</Form.Label>
-                <FormGroup>
-                  <Form.Control required value={state.issue_project} onChange={handleChange} type="text" name="issue_project" placeholder="Project of which an issue is to be submitted"/>
-                </FormGroup>
+                <Form.Label>Submit new issue to project</Form.Label>
                 <FormGroup>
                   <Form.Control required value={state.issue_title} onChange={handleChange} type="text" name="issue_title" placeholder="*Title" />
                 </FormGroup>   
@@ -63,10 +64,10 @@ export default function CreateIssueForm(){
                   <Form.Control required value={state.created_by} onChange={handleChange} type="text" name="created_by" placeholder="*Created by" />
                 </FormGroup>  
                 <FormGroup>
-                  <Form.Control value={state.assigned_to} onChange={handleChange} type="text" name="assigned_to" placeholder="(opt)Assigned to"/>
+                  <Form.Control required value={state.assigned_to} onChange={handleChange} type="text" name="assigned_to" placeholder="Assigned to"/>
                 </FormGroup>      
                 <FormGroup>
-                  <Form.Control value={state.status_text} onChange={handleChange} type="text" name="status_text" placeholder="(opt)Status text"/>
+                  <Form.Control value={state.status_text} onChange={handleChange} type="text" name="status_text" placeholder="Optional status text"/>
                 </FormGroup>     
                 <Button type="submit" onClick={handleSubmit}>Submit Issue</Button>
             </Form>
