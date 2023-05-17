@@ -28,7 +28,10 @@ export default function CreateIssueForm(){
     }
   
     const handleSubmit = (event) => {
+      event.preventDefault();
+
       const form = event.currentTarget;
+
       if (form.checkValidity() === false) {
         event.preventDefault();
         event.stopPropagation();
@@ -44,7 +47,9 @@ export default function CreateIssueForm(){
         body: JSON.stringify(state),
       })
       .then((res) => res.json())
-      .then(result => nav("/see-issues", {replace : true, state: {project : state.issue_project}}))
+      .then(result => {
+        return nav("/see-issues", {replace : true, state: {project : state.issue_project}})
+      })
       .catch(error => {
         console.log(error)
       })

@@ -1,30 +1,34 @@
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useMemo } from "react"
 import { Badge, Button, ButtonGroup, Card, CardGroup, Container } from "react-bootstrap"
 import { LinkContainer } from "react-router-bootstrap"
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import CreateIssueForm from "./create"
 
 export default function IssueList(){
+    //get query params from location reference
+    let nav = useNavigate();
+    let {state : params} = useLocation();
+    //copy params
+    let queryParams = useMemo(() => {
+        return {...params}
+    }, [params])
+
+    if(!!params){ 
+        //delete undefined body parameters EXCEPT FOR "open", which is a boolean and can be falsy
+        Object.keys(params).forEach(key => {
+            return !queryParams[key] && typeof(queryParams[key]) !== "boolean" ? delete queryParams[key] : {}
+        });
+    }
+
     const [state, changeState] = useState({
         issueList : [],
         dataIsLoaded : false,
         message : ""
     })
-
-    //get query params from location reference
-    let {state : params} = useLocation()
-    //copy params
-    let queryParams = {...params}
     
-    //delete undefined body parameters EXCEPT FOR "open", which is a boolean and can be falsy
-    Object.keys(params).forEach(key => {
-        return !queryParams[key] && typeof(queryParams[key]) !== "boolean" ? delete queryParams[key] : {}
-    });
-    
-    console.log(queryParams)
-    let url = `http://localhost:5000/api/issues?${new URLSearchParams(queryParams).toString()}` 
-
     let loadItems = useCallback(() => {
+        let url = `http://localhost:5000/api/issues?${new URLSearchParams(queryParams).toString()}` 
+
         fetch(url)
         .then((res) => res.json()) //take the response string and turn it into a json array
         .then((json) => { //take the json array from the previous step...
@@ -40,11 +44,12 @@ export default function IssueList(){
                 message : "Issue not found"
             })
         })  
-    }, [url])
+    }, [queryParams])
 
     useEffect(() => {
+        if(!params) return nav("/", {replace : true});
         return loadItems
-    }, [state.dataIsLoaded, url, loadItems])
+    }, [state.dataIsLoaded, loadItems, nav, params])
 
     function closeIssue(state){
         fetch(`http://localhost:5000/api/issues/`, {

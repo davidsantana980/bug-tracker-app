@@ -64,7 +64,6 @@ class IssueCards extends Component {
         let ProjectCards = () => {
             let projectAndIssueCountPair = this.uniqueProjectsByProp("project");
 
-
             return projectAndIssueCountPair.map((project, index) => {
                 return(
                     <Container className="col-md-12 col-lg-6 mt-2" key={project.name}>
