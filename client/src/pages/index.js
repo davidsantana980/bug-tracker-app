@@ -1,6 +1,7 @@
 import { Component } from "react";
 import { Container, Card, CardGroup, Button, Row, Col, Badge } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
+import CreateProjectForm from "./createProject";
 
 
 class IssueCards extends Component {
@@ -56,7 +57,7 @@ class IssueCards extends Component {
         if(!this.state.dataIsLoaded){
             return (
                 <Container>
-                    <h1>Please wait...</h1>
+                    <h3>Please wait...</h3>
                 </Container>
             )
         } 
@@ -90,7 +91,7 @@ class IssueCards extends Component {
                 return (
                     <LinkContainer to={`/see-issues`} state={{created_by : creator.name}} key={index}> 
                         <Badge pill as="button" bg="info" key={index}>
-                            {creator.name} 
+                            {!!creator.name ? creator.name : "Unknown"} 
                             <Badge bg="secondary">{creator.totalCount}</Badge>
                         </Badge>
                     </LinkContainer> 
@@ -106,7 +107,7 @@ class IssueCards extends Component {
                     <LinkContainer to={`/see-issues`} state={{assigned_to : user.name}} key={index}> 
                         <Badge pill as="button" bg="info" key={index}>
                             {/* <Button size="sm" key={index}> */}
-                                {user.name} 
+                                {!!user.name ? user.name : "Unknown"} 
                                 <Badge bg="secondary">{user.openIssueCount}</Badge>
                             {/* </Button> */}
                         </Badge>
@@ -138,6 +139,10 @@ class IssueCards extends Component {
                         <Container>
                             <h4>See issues by assignment</h4>
                             <AssignedList/>
+                        </Container>
+                        <hr/>
+                        <Container>
+                            <CreateProjectForm />
                         </Container>
                     </Col>
                 </Row>

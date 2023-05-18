@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback, useMemo } from "react"
-import { Badge, Button, ButtonGroup, Card, CardGroup, Container } from "react-bootstrap"
+import { Badge, Button, ButtonGroup, Card, CardGroup, Col, Container, Row } from "react-bootstrap"
 import { LinkContainer } from "react-router-bootstrap"
 import { useLocation, useNavigate } from "react-router-dom"
 import CreateIssueForm from "./create"
+import Issue from "./issueDetails"
+import UpdateIssueForm from "./update"
 
 export default function IssueList(){
     //get query params from location reference
@@ -99,17 +101,15 @@ export default function IssueList(){
                                 <Card.Text><Badge pill bg="success">{!issue.open ? `This issue is solved!` : ""}</Badge></Card.Text>
 
                                 <ButtonGroup>
-                                    <LinkContainer to={`/issue`} state={issue}>
-                                        <Card.Link><Button variant="dark">See issue details</Button></Card.Link>
-                                    </LinkContainer>
-
+                                    <Card.Link>
+                                        <Issue props={issue}>See issue details</Issue>
+                                    </Card.Link>
                                     <Card.Link>
                                         <Button as="input" readOnly value={issue.open ? "Close issue" : "Re-open issue"} onClick={() => closeIssue({_id: issue._id , open: !issue.open})}  variant={issue.open ? "success" : "primary"}/>
                                     </Card.Link>
-
-                                    <LinkContainer to={`/update`} state={issue}>
-                                        <Card.Link><Button variant="secondary">Update issue</Button></Card.Link>
-                                    </LinkContainer>
+                                    <Card.Link>
+                                        <UpdateIssueForm props = {issue}>Update issue</UpdateIssueForm>
+                                    </Card.Link>
                                 </ButtonGroup>
                             </Card.Body>
                         </Card>
@@ -120,12 +120,26 @@ export default function IssueList(){
         //if the list issue is a project's...
         if(Object.keys(queryParams).length === 1 && Object.keys(queryParams).pop() === "project"){
             return (         
-                <Container className="col-md-12 col-lg-8 mt-2 mb-5" >
-                    <CreateIssueForm state={queryParams.project} />
-                    <CardGroup>
-                        {issueCards}
-                    </CardGroup>
-                    <ReturnButton/>
+                <Container fluid className="mb-5">
+                    <Row>
+                        <Container className="col-lg-8 mb-2 mt-2">
+                            <h3>Project {queryParams.project}'s issues:</h3>
+                        </Container>
+
+                        <Col lg={7}>
+                            <Container fluid>
+                                <CardGroup>
+                                    {issueCards}
+                                </CardGroup>
+                            </Container>
+                        </Col>
+                        <Col lg={5}>
+                            <Container fluid>
+                                <CreateIssueForm state={queryParams.project} />
+                            </Container>
+                            <ReturnButton/>
+                        </Col>
+                    </Row>
                 </Container>
             )
         }
