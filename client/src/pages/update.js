@@ -33,7 +33,7 @@ let DetailsModal = (props) => {
 
     let content = {...state};
 
-    fetch(`http://localhost:5000/api/issues/`, {
+    fetch(process.env.REACT_APP_API_LINK, {
       method: "PUT", // or 'PUT'
       headers: {
         "Content-Type": "application/json",
@@ -66,7 +66,7 @@ let DetailsModal = (props) => {
                   <Form.Control value={state.created_by} onChange={handleChange} type="text" name="created_by" placeholder="(opt)Created by" required=''/>
                   <Form.Control value={state.assigned_to} onChange={handleChange} type="text" name="assigned_to" placeholder="(opt)Assigned to" />
                   <Form.Control value={state.status_text} onChange={handleChange} type="text" name="status_text" placeholder="(opt)Status text" />
-                  <Container className="d-grid mt-3">
+                  <Container fluid className="d-grid mt-3">
                     <Badge pill bg="success" className="mb-2">{updatedStatus ? `Just updated!` : `Last updated on: ${state.updated_on}`}</Badge>
                     <Button variant="primary" size="lg" onClick={handleSubmit} type="submit">Update Issue</Button>
                   </Container>

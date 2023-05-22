@@ -38,7 +38,7 @@ export default function CreateProjectForm(){
       }
       
       setValidated(true)
-      fetch(`http://localhost:5000/api/issues`, {
+      fetch(process.env.REACT_APP_API_LINK, {
         method: "POST", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
