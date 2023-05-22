@@ -31,7 +31,6 @@ export default function GetIssueForm() {
         open : projectObj.open === undefined ? false : !projectObj.open
       })  
   
-      console.log(projectObj.open)
     }
   
     return (

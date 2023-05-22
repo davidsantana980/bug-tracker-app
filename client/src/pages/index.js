@@ -3,7 +3,6 @@ import { Container, Card, CardGroup, Button, Row, Col, Badge } from "react-boots
 import { LinkContainer } from "react-router-bootstrap";
 import CreateProjectForm from "./createProject";
 
-
 class IssueCards extends Component {
     
     constructor(props) {
@@ -17,7 +16,7 @@ class IssueCards extends Component {
 
     componentDidMount(){
         try{
-            fetch("http://localhost:5000/api/issues") //?open=true")
+            fetch(process.env.REACT_APP_API_LINK) //?open=true")
             .then((res) => res.json()) //take the response string and turn it into a json array
             .then((json) => { //take the json array from the previous step...
                 let openIssues = json.filter(project => project.open )
@@ -28,6 +27,7 @@ class IssueCards extends Component {
                 })
             })  
         }catch(error){
+            // console.log(error)
             this.setState({
                 dataIsLoaded:true //changed status
             })

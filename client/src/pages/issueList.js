@@ -29,7 +29,7 @@ export default function IssueList(){
     })
     
     let loadItems = useCallback(() => {
-        let url = `http://localhost:5000/api/issues?${new URLSearchParams(queryParams).toString()}` 
+        let url = `${process.env.REACT_APP_API_LINK}?${new URLSearchParams(queryParams).toString()}` 
 
         fetch(url)
         .then((res) => res.json()) //take the response string and turn it into a json array
