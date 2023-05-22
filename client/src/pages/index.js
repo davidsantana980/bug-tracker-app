@@ -16,16 +16,22 @@ class IssueCards extends Component {
     }
 
     componentDidMount(){
-        fetch("http://localhost:5000/api/issues") //?open=true")
-        .then((res) => res.json()) //take the response string and turn it into a json array
-        .then((json) => { //take the json array from the previous step...
-            let openIssues = json.filter(project => project.open )
+        try{
+            fetch("http://localhost:5000/api/issues") //?open=true")
+            .then((res) => res.json()) //take the response string and turn it into a json array
+            .then((json) => { //take the json array from the previous step...
+                let openIssues = json.filter(project => project.open )
+                this.setState({
+                    allIssues: json, //...and make our this.state.items<Array> == the JSON<Array> response
+                    openIssues : openIssues,
+                    dataIsLoaded:true //changed status
+                })
+            })  
+        }catch(error){
             this.setState({
-                allIssues: json, //...and make our this.state.items<Array> == the JSON<Array> response
-                openIssues : openIssues,
                 dataIsLoaded:true //changed status
             })
-        })  
+        }
     }
 
     uniqueProjectsByProp(prop){
@@ -116,38 +122,58 @@ class IssueCards extends Component {
             });
         }
 
-        return(
-            <Container fluid className="mb-5">
-                <Row>
-                    <Col lg={8}>
-                        <Container fluid>
-                            <CardGroup>
-                                <ProjectCards/>
-                            </CardGroup>
-                        </Container>
-                    </Col>
-                    <Col lg={4}>
-                        <Container className="mt-2">
-                            {/* <ButtonToolbar className="justify-content-between"> */}
-                                {/* <ButtonGroup size="sm" > */}
+        if(!this.state.allIssues.length){
+            return(
+                <Container className="mx-auto">
+                    <Row>
+                        <Col>
+                            <Container className="mt-1 justify-content-center p-3 border bg-light">
+                                <Container className="text-center">
+                                    <h3>Create a new project to start!</h3>
+                                </Container>
+                                <Container>
+                                    <CreateProjectForm />
+                                </Container>
+                            </Container>
+                        </Col>
+                    </Row>
+                </Container>
+            )
+        }else{
+            return(
+                <Container fluid className="mb-5">
+                    <Row>
+                        <Col lg={8}>
+                            <Container fluid className="mt-1">
+                                <Container className="p-3 border bg-light">
+                                    <h2>Your projects:</h2>
+                                </Container>
+                                <Container className="border">
+                                    <CardGroup className="mb-2">
+                                        <ProjectCards/>
+                                    </CardGroup>
+                                </Container>
+                            </Container>
+                        </Col>
+                        <Col lg={4}>
+                            <Container className="mt-2">
                                 <h4>See issues by creator</h4>
                                 <CreatorList />
-                                {/* </ButtonGroup> */}
-                            {/* </ButtonToolbar> */}
-                        </Container>
-                        <hr/>
-                        <Container>
-                            <h4>See issues by assignment</h4>
-                            <AssignedList/>
-                        </Container>
-                        <hr/>
-                        <Container>
-                            <CreateProjectForm />
-                        </Container>
-                    </Col>
-                </Row>
-            </Container>
-       )
+                            </Container>
+                            <hr/>
+                            <Container>
+                                <h4>See issues by assignment</h4>
+                                <AssignedList/>
+                            </Container>
+                            <hr/>
+                            <Container>
+                                <CreateProjectForm />
+                            </Container>
+                        </Col>
+                    </Row>
+                </Container>
+            )
+        }
     }
 }
 

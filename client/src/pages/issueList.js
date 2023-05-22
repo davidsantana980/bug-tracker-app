@@ -142,16 +142,16 @@ export default function IssueList(){
                     </Row>
                 </Container>
             )
+        }else{   
+            return (
+                <Container className="col-md-12 col-lg-8 mt-2 mb-5" >
+                    <CardGroup>
+                        {issueCards}
+                    </CardGroup>
+                    <ReturnButton/>
+                </Container>
+            ) 
         }
-        
-        return (
-            <Container className="col-md-12 col-lg-8 mt-2 mb-5" >
-                <CardGroup>
-                    {issueCards}
-                </CardGroup>
-                <ReturnButton/>
-            </Container>
-        ) 
 
     }
 
