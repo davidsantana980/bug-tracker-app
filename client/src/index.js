@@ -5,13 +5,14 @@ import AppRoutes from './App';
 import reportWebVitals from './reportWebVitals';
 
 import { BrowserRouter } from 'react-router-dom';
-import { Container,  Nav, Navbar } from "react-bootstrap";
+import { Container,  Nav, NavDropdown, Navbar } from "react-bootstrap";
 import {LinkContainer} from "react-router-bootstrap"
+import CreateProjectForm from './pages/createProject';
 
 function CustomNavbar() {
   return (
     <Navbar expand="lg" sticky="top" bg="dark" variant='dark' className='mb-2'>
-      <Container>
+      <Container >
         <LinkContainer to="/">
           <Navbar.Brand>Issue Tracker</Navbar.Brand>
         </LinkContainer>
@@ -19,11 +20,15 @@ function CustomNavbar() {
         <Navbar.Collapse id= "basic-navbar-nav">
           <Nav>
             <LinkContainer to="/search">
-              <Nav.Link>Search</Nav.Link>
+              <Nav.Link>Search issue</Nav.Link>
             </LinkContainer>
-            <LinkContainer to="/create">
-              <Nav.Link>Add issue</Nav.Link>
-            </LinkContainer>
+            <NavDropdown
+              title="Add new project"
+              menuVariant="dark"
+            >
+              <CreateProjectForm/>
+            </NavDropdown>
+
           </Nav>
         </Navbar.Collapse>
       </Container>

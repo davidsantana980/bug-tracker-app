@@ -1,28 +1,36 @@
-import { useState, useEffect, useCallback } from "react"
-import { Badge, Button, ButtonGroup, Card, CardGroup, Container } from "react-bootstrap"
+import { useState, useEffect, useCallback, useMemo } from "react"
+import { Badge, Button, ButtonGroup, Card, CardGroup, Col, Container, Row } from "react-bootstrap"
 import { LinkContainer } from "react-router-bootstrap"
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
+import CreateIssueForm from "./create"
+import Issue from "./issueDetails"
+import UpdateIssueForm from "./update"
 
 export default function IssueList(){
+    //get query params from location reference
+    let nav = useNavigate();
+    let {state : params} = useLocation();
+    //copy params
+    let queryParams = useMemo(() => {
+        return {...params}
+    }, [params])
+
+    if(!!params){ 
+        //delete undefined body parameters EXCEPT FOR "open", which is a boolean and can be falsy
+        Object.keys(params).forEach(key => {
+            return !queryParams[key] && typeof(queryParams[key]) !== "boolean" ? delete queryParams[key] : {}
+        });
+    }
+
     const [state, changeState] = useState({
         issueList : [],
         dataIsLoaded : false,
         message : ""
     })
-
-    //get query params from location reference
-    let {state : params} = useLocation()
-    //copy params
-    let queryParams = {...params}
     
-    //delete undefined body parameters EXCEPT FOR "open", which is a boolean and can be falsy
-    Object.keys(params).forEach(key => {
-        return !queryParams[key] && typeof(queryParams[key]) !== "boolean" ? delete queryParams[key] : {}
-    });
-    
-    let url = `http://localhost:5000/api/issues?${new URLSearchParams(queryParams).toString()}` 
-
     let loadItems = useCallback(() => {
+        let url = `http://localhost:5000/api/issues?${new URLSearchParams(queryParams).toString()}` 
+
         fetch(url)
         .then((res) => res.json()) //take the response string and turn it into a json array
         .then((json) => { //take the json array from the previous step...
@@ -38,11 +46,12 @@ export default function IssueList(){
                 message : "Issue not found"
             })
         })  
-    }, [url])
+    }, [queryParams])
 
     useEffect(() => {
+        if(!params) return nav("/", {replace : true});
         return loadItems
-    }, [state.dataIsLoaded, url, loadItems])
+    }, [state.dataIsLoaded, loadItems, nav, params])
 
     function closeIssue(state){
         fetch(`http://localhost:5000/api/issues/`, {
@@ -61,6 +70,17 @@ export default function IssueList(){
         })
     }
     
+    function ReturnButton  (props) {
+        return (
+            <Container className="d-grid mt-3">
+                <LinkContainer to={`/`} >
+                    <Button variant="primary" size="lg">
+                        Go back to main menu
+                    </Button>
+                </LinkContainer> 
+            </Container>
+        )
+    }
 
     if(state.dataIsLoaded){
         let issueCards = state.issueList.map((issue, index) => {
@@ -81,17 +101,15 @@ export default function IssueList(){
                                 <Card.Text><Badge pill bg="success">{!issue.open ? `This issue is solved!` : ""}</Badge></Card.Text>
 
                                 <ButtonGroup>
-                                    <LinkContainer to={`/issue`} state={issue}>
-                                        <Card.Link><Button variant="dark">See issue details</Button></Card.Link>
-                                    </LinkContainer>
-
+                                    <Card.Link>
+                                        <Issue props={issue}>See issue details</Issue>
+                                    </Card.Link>
                                     <Card.Link>
                                         <Button as="input" readOnly value={issue.open ? "Close issue" : "Re-open issue"} onClick={() => closeIssue({_id: issue._id , open: !issue.open})}  variant={issue.open ? "success" : "primary"}/>
                                     </Card.Link>
-
-                                    <LinkContainer to={`/update`} state={issue}>
-                                        <Card.Link><Button variant="secondary">Update issue</Button></Card.Link>
-                                    </LinkContainer>
+                                    <Card.Link>
+                                        <UpdateIssueForm props = {issue}>Update issue</UpdateIssueForm>
+                                    </Card.Link>
                                 </ButtonGroup>
                             </Card.Body>
                         </Card>
@@ -99,14 +117,42 @@ export default function IssueList(){
             )
         })
 
-        
-        return (
-            <Container className="col-md-12 col-lg-8 mt-2 mb-5" >
-                <CardGroup>
-                    {issueCards}
-                </CardGroup>
-            </Container>
-        ) 
+        //if the list issue is a project's...
+        if(Object.keys(queryParams).length === 1 && Object.keys(queryParams).pop() === "project"){
+            return (         
+                <Container fluid className="mb-5">
+                    <Row>
+                        <Container className="col-lg-8 mb-2 mt-2">
+                            <h3>Project {queryParams.project}'s issues:</h3>
+                        </Container>
+
+                        <Col lg={7}>
+                            <Container fluid>
+                                <CardGroup>
+                                    {issueCards}
+                                </CardGroup>
+                            </Container>
+                        </Col>
+                        <Col lg={5}>
+                            <Container fluid>
+                                <CreateIssueForm state={queryParams.project} />
+                            </Container>
+                            <ReturnButton/>
+                        </Col>
+                    </Row>
+                </Container>
+            )
+        }else{   
+            return (
+                <Container className="col-md-12 col-lg-8 mt-2 mb-5" >
+                    <CardGroup>
+                        {issueCards}
+                    </CardGroup>
+                    <ReturnButton/>
+                </Container>
+            ) 
+        }
+
     }
 
     let message = "Please wait..."

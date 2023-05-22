@@ -35,7 +35,7 @@ module.exports = function (app) {
     Object.keys(queryParams).forEach(key => queryParams[key] === undefined ? delete queryParams[key] : {});
 
     //not gonna get all objects
-    if(Object.values(queryParams).length < 1) return res.json({ error: 'no get field(s) sent' })  
+    // if(Object.values(queryParams).length < 1) return res.json({ error: 'no get field(s) sent' })  
 
     try{
       let result = await readMany(queryParams);
@@ -105,12 +105,38 @@ module.exports = function (app) {
     
   app.delete('/api/issues', async (req, res) => {    
     try{
-      if(!req.body._id) return res.json({ error: 'missing _id' })  
-      await Issue.findByIdAndDelete(req.body._id, (err,data) => {
+      if(!!req.body._id) {//return res.json({ error: 'missing _id' })  
+        await Issue.findByIdAndDelete(req.body._id, (err,data) => {
+          if(!data || err){
+            return res.json({ error: 'could not delete', _id: req.body._id });
+          }
+          return res.json({ result: 'successfully deleted', _id: req.body._id })
+        }).clone();
+      }
+
+      if(!!req.body.project){ //return res.json({ error: 'missing project' })  
+        await Issue.findOneAndDelete({project : req.body.project}, (err,data) => {
+          if(!data || err){
+            return res.json({ error: 'could not delete', project: req.body.project });
+          }
+          return res.json({ result: 'successfully deleted', project: req.body.project })
+        }).clone();
+      }
+
+      throw new Error;
+    }catch(error){
+      return 0//console.log(error)
+    }
+  });  
+
+  app.delete('/api/issues', async (req, res) => {    
+    try{
+      if(!req.body.project) return res.json({ error: 'missing project' })  
+      await Issue.findOneAndDelete({project : req.body.project}, (err,data) => {
         if(!data || err){
-          return res.json({ error: 'could not delete', _id: req.body._id });
+          return res.json({ error: 'could not delete', project: req.body.project });
         }
-        return res.json({ result: 'successfully deleted', _id: req.body._id })
+        return res.json({ result: 'successfully deleted', project: req.body.project })
       }).clone();
     }catch(error){
       return 0//console.log(error)
