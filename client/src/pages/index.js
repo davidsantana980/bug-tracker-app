@@ -62,8 +62,8 @@ class IssueCards extends Component {
 
         if(!this.state.dataIsLoaded){
             return (
-                <Container>
-                    <h3>Please wait...</h3>
+                <Container className="p-3">
+                    <h2>Please wait...</h2>
                 </Container>
             )
         } 
@@ -131,7 +131,7 @@ class IssueCards extends Component {
                         <Col>
                             <Container className="mt-1 justify-content-center p-3 border bg-light">
                                 <Container className="text-center">
-                                    <h3>Create a new project to start!</h3>
+                                    <h2>Create a new project to start!</h2>
                                 </Container>
                                 <Container>
                                     <CreateProjectForm />
@@ -157,18 +157,22 @@ class IssueCards extends Component {
                                 </Container>
                             </Container>
                         </Col>
-                        <Col lg={4}>
+                        <Col lg={4} className="mt-1">
+                            <hr/>
                             <Container className="mt-2">
-                                <h4>See issues by creator</h4>
+                                <h5>See issues by creator</h5>
                                 <CreatorList />
                             </Container>
                             <hr/>
                             <Container>
-                                <h4>See issues by assignment</h4>
+                                <h5>See issues by assignment</h5>
                                 <AssignedList/>
                             </Container>
                             <hr/>
                             <Container>
+                                <Container className="text-start">
+                                    <h5>Create a new project!</h5>
+                                </Container>
                                 <CreateProjectForm />
                             </Container>
                         </Col>
