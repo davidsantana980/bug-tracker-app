@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { Container, Card, CardGroup, Button, Row, Col, Badge } from "react-bootstrap";
+import { Container, Card, CardGroup, Button, Row, Col, Badge, ButtonGroup } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import CreateProjectForm from "./createProject";
 
@@ -78,12 +78,14 @@ class IssueCards extends Component {
                             <Card.Body>
                                 <Card.Title>{project.name}</Card.Title>
                                 <Card.Subtitle className="mb-2 text-muted">{project.openIssueCount} {project.openIssueCount === 1 ? "issue" : "issues"} in progress, {project.totalCount} total</Card.Subtitle>
-                                <LinkContainer to={`/see-issues`} state={{project : project.name}}>
-                                    <Card.Link><Button>See all issues</Button></Card.Link>
-                                </LinkContainer>
-                                <LinkContainer to={`/delete`} state={{project : project.name}}>
-                                    <Card.Link><Button variant="danger">Delete project</Button></Card.Link>
-                                </LinkContainer>
+                                <ButtonGroup>
+                                    <LinkContainer to={`/see-issues`} state={{project : project.name}}>
+                                        <Card.Link><Button>See all issues</Button></Card.Link>
+                                    </LinkContainer>
+                                    <LinkContainer to={`/delete`} state={{project : project.name}}>
+                                        <Card.Link><Button variant="danger">Delete project</Button></Card.Link>
+                                    </LinkContainer>
+                                </ButtonGroup>
                             </Card.Body>
                         </Card>
                     </Container>

@@ -56,30 +56,37 @@ export default function CreateIssueForm(){
     }
   
     return (
-        <Container className="mb-3">
-            <Form id="testForm" validated={validated}>
-                <Form.Label>
-                  <h4>
-                    Submit a new issue to this project
-                  </h4>
-                </Form.Label>
-                <FormGroup>
-                  <Form.Control required value={state.issue_title} onChange={handleChange} type="text" name="issue_title" placeholder="Title" />
-                </FormGroup>   
-                <FormGroup>
-                  <Form.Control required value={state.issue_text} onChange={handleChange} as="textarea" name="issue_text" placeholder="Text" />
-                </FormGroup>  
-                <FormGroup>
-                  <Form.Control required value={state.created_by} onChange={handleChange} type="text" name="created_by" placeholder="Created by" />
-                </FormGroup>  
-                <FormGroup>
-                  <Form.Control required value={state.assigned_to} onChange={handleChange} type="text" name="assigned_to" placeholder="Assigned to"/>
-                </FormGroup>      
-                <FormGroup className="mb-2">
-                  <Form.Control value={state.status_text} onChange={handleChange} type="text" name="status_text" placeholder="Optional status text"/>
-                </FormGroup>  
-                <Button type="submit" onClick={handleSubmit}>Submit Issue</Button>
-            </Form>
+        <Container>
+            <Container fluid className="p-3 border bg-light">
+              <h3>
+                Submit a new issue to this project
+              </h3>
+            </Container>
+            <Container className="border">
+              <Form id="testForm" className="mb-2 mt-2" validated={validated}>
+                  <Form.Label visuallyHidden>
+                        Submit a new issue to this project
+                  </Form.Label>
+                  <FormGroup>
+                    <Form.Control required value={state.issue_title} onChange={handleChange} type="text" name="issue_title" placeholder="Title" />
+                  </FormGroup>   
+                  <FormGroup>
+                    <Form.Control required value={state.issue_text} onChange={handleChange} as="textarea" name="issue_text" placeholder="Text" />
+                  </FormGroup>  
+                  <FormGroup>
+                    <Form.Control required value={state.created_by} onChange={handleChange} type="text" name="created_by" placeholder="Created by" />
+                  </FormGroup>  
+                  <FormGroup>
+                    <Form.Control required value={state.assigned_to} onChange={handleChange} type="text" name="assigned_to" placeholder="Assigned to"/>
+                  </FormGroup>      
+                  <FormGroup className="mb-2">
+                    <Form.Control value={state.status_text} onChange={handleChange} type="text" name="status_text" placeholder="Optional status text"/>
+                  </FormGroup>  
+                  <Container fluid className="d-grid mt-2">
+                    <Button type="submit" size="lg" onClick={handleSubmit}>Submit Issue</Button>
+                  </Container>
+              </Form>
+            </Container>
         </Container>
     )
   }

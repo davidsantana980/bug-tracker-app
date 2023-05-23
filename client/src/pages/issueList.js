@@ -54,7 +54,7 @@ export default function IssueList(){
     }, [state.dataIsLoaded, loadItems, nav, params])
 
     function closeIssue(state){
-        fetch(`http://localhost:5000/api/issues/`, {
+        fetch(process.env.REACT_APP_API_LINK, {
             method: "PUT",
             headers: {
             "Content-Type": "application/json",
@@ -88,29 +88,39 @@ export default function IssueList(){
                     <Container fluid key={index} className="mb-2">
                         <Card key={index} className="text-center">
                             <Card.Body>
-                                <Card.Title><b>Issue title:</b> {issue.issue_title}</Card.Title>
-                                <Card.Subtitle className="mb-2 text-muted">{issue.status_text ? `Status: ${issue.status_text}` : ""}</Card.Subtitle>
+                                <Row className="mb-3">
+                                    <Col>
+                                        <Container fluid>
+                                            <Card.Title><b>Issue title:</b> {issue.issue_title}</Card.Title>
+                                            <Card.Subtitle className="mb-2 text-muted">{issue.status_text ? `Status: ${issue.status_text}` : ""}</Card.Subtitle>
 
-                                <Card.Text>
-                                    {issue.issue_text ? (
-                                        <span><b>Summary:</b> {issue.issue_text}</span>
-                                    ) : (
-                                        "Click button for more details"
-                                    )}
-                                </Card.Text>
-                                <Card.Text><Badge pill bg="success">{!issue.open ? `This issue is solved!` : ""}</Badge></Card.Text>
-
-                                <ButtonGroup>
-                                    <Card.Link>
-                                        <Issue props={issue}>See issue details</Issue>
-                                    </Card.Link>
-                                    <Card.Link>
-                                        <Button as="input" readOnly value={issue.open ? "Close issue" : "Re-open issue"} onClick={() => closeIssue({_id: issue._id , open: !issue.open})}  variant={issue.open ? "success" : "primary"}/>
-                                    </Card.Link>
-                                    <Card.Link>
-                                        <UpdateIssueForm props = {issue}>Update issue</UpdateIssueForm>
-                                    </Card.Link>
-                                </ButtonGroup>
+                                            <Card.Text>
+                                                {issue.issue_text ? (
+                                                    <span><b>Summary:</b> {issue.issue_text}</span>
+                                                ) : (
+                                                    "Click button for more details"
+                                                )}
+                                            </Card.Text>
+                                            <Card.Text><Badge pill bg="success">{!issue.open ? `This issue is solved!` : ""}</Badge></Card.Text>
+                                        </Container>    
+                                    </Col>
+                                </Row>
+                                <Row >
+                                    <Container>
+                                        <ButtonGroup className="flex-wrap">
+                                            <Card.Link as={Button} className="btn btn-dark">
+                                                <Issue props={issue}/>
+                                            </Card.Link>
+                                            <Card.Link as={Button} className={`btn ${issue.open ? "btn-success" : "btn-primary"}`}>
+                                                <span onClick={() => closeIssue({_id: issue._id , open: !issue.open})} >{issue.open ? "Close this issue" : "Re-open issue"}</span>
+                                            </Card.Link>                     
+                                            <Card.Link as={Button} className="btn btn-secondary">
+                                                <UpdateIssueForm  props = {issue}>Update issue</UpdateIssueForm>
+                                            </Card.Link>
+                                        </ButtonGroup>
+                                    </Container>
+                                </Row>
+ 
                             </Card.Body>
                         </Card>
                     </Container>
@@ -122,19 +132,18 @@ export default function IssueList(){
             return (         
                 <Container fluid className="mb-5">
                     <Row>
-                        <Container className="col-lg-8 mb-2 mt-2">
-                            <h3>Project {queryParams.project}'s issues:</h3>
-                        </Container>
-
                         <Col lg={7}>
-                            <Container fluid>
-                                <CardGroup>
+                            <Container fluid className="mt-2 p-3 border bg-light">
+                                <h3>Project {queryParams.project}'s issues:</h3>
+                            </Container>
+                            <Container fluid className="border">
+                                <CardGroup className="mt-2">
                                     {issueCards}
                                 </CardGroup>
                             </Container>
                         </Col>
                         <Col lg={5}>
-                            <Container fluid>
+                            <Container fluid className="mt-2">
                                 <CreateIssueForm state={queryParams.project} />
                             </Container>
                             <ReturnButton/>
@@ -144,12 +153,19 @@ export default function IssueList(){
             )
         }else{   
             return (
-                <Container className="col-md-12 col-lg-8 mt-2 mb-5" >
-                    <CardGroup>
-                        {issueCards}
-                    </CardGroup>
-                    <ReturnButton/>
-                </Container>
+                <>
+                    <Container fluid className="mt-2 p-3  col-lg-8 border bg-light">
+                        <h3>Search results:</h3>
+                    </Container>
+                    <Container className="border col-md-12 col-lg-8 mb-5" >
+                        <CardGroup className="mt-3">
+                            {issueCards}
+                        </CardGroup>
+                        <Container className="mb-3">
+                            <ReturnButton  />
+                        </Container>
+                    </Container>
+                </>
             ) 
         }
 
