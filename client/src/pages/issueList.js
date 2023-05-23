@@ -43,7 +43,7 @@ export default function IssueList(){
 
             return changeState({
                 dataIsLoaded : false,
-                message : "Issue not found"
+                message : "Oops! Not found"
             })
         })  
     }, [queryParams])
@@ -120,7 +120,6 @@ export default function IssueList(){
                                         </ButtonGroup>
                                     </Container>
                                 </Row>
- 
                             </Card.Body>
                         </Card>
                     </Container>
@@ -178,7 +177,7 @@ export default function IssueList(){
     }
 
     return (
-        <Container>
+        <Container fluid className="mt-2 p-4  col-lg-8 border bg-light">
             <h1>{message}</h1>
         </Container>
     )
