@@ -60,7 +60,9 @@ export default function CreateProjectForm(){
                 <FormGroup className="mb-2">
                   <Form.Control required value={state.issue_project} onChange={handleChange} type="text" name="issue_project" placeholder="Project name" />
                 </FormGroup>       
-                <Button type="submit" size="sm" onClick={handleSubmit}>Create</Button>
+                <Container fluid className="d-grid mt-1">
+                  <Button type="submit"  onClick={handleSubmit}>Create</Button>
+                </Container>
             </Form>
         </Container>
     )
