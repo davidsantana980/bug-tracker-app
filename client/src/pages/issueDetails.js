@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, ButtonGroup, Card, Container, ListGroup, Modal } from "react-bootstrap";
+import { Button, ButtonGroup, Card, Col, Container, ListGroup, Modal, Row } from "react-bootstrap";
 import CardHeader from "react-bootstrap/esm/CardHeader";
 import { LinkContainer } from "react-router-bootstrap";
 
@@ -28,13 +28,18 @@ let DetailsModal = (props) => {
             <Modal.Body>
                 <Container >
                     <Card>
-                        <CardHeader>
-                            Issue ID: <b>{info._id}</b>
-                            <ButtonGroup className="float-end">
-                                <LinkContainer to={`/delete`} state={{_id : info._id, project : info.project}}>
-                                    <Card.Link><Button variant="danger" size="sm">Delete issue</Button></Card.Link>
-                                </LinkContainer> 
-                            </ButtonGroup>
+                        <CardHeader as={Row}>
+                            <Col lg="10">
+                                <text>Issue ID: <b>{info._id}</b></text>
+                            </Col>
+                            <Col lg="2">
+                                <ButtonGroup className="flex-wrap">
+                                    <LinkContainer to={`/delete`} state={{_id : info._id, project : info.project}}>
+                                        <Card.Link><Button className="float-end" variant="danger" size="sm">Delete issue</Button></Card.Link>
+                                    </LinkContainer> 
+                                </ButtonGroup>
+        
+                            </Col>
                         </CardHeader>
                         <Card.Body>
                             <Card.Title className="mb-3">{info.issue_title}</Card.Title>
@@ -76,7 +81,7 @@ export default function Issue (props) {
 
     return (
         <>
-            <Button onClick={() => setDetailsModal({show: true, props: info})} variant="dark">See issue details</Button>
+            <span onClick={() => setDetailsModal({show: true, props: info})} >Issue details</span>
             <DetailsModal 
                 show={detailsModal.show}
                 onHide={() => setDetailsModal({show :false})}
