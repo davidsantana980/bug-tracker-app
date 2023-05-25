@@ -106,7 +106,7 @@ module.exports = function (app) {
   app.delete('/api/issues', async (req, res) => {    
     try{
       if(!!req.body._id) {//return res.json({ error: 'missing _id' })  
-        await Issue.findByIdAndDelete(req.body._id, (err,data) => {
+        return await Issue.findByIdAndDelete(req.body._id, (err,data) => {
           if(!data || err){
             return res.json({ error: 'could not delete', _id: req.body._id });
           }
@@ -115,29 +115,15 @@ module.exports = function (app) {
       }
 
       if(!!req.body.project){ //return res.json({ error: 'missing project' })  
-        await Issue.findOneAndDelete({project : req.body.project}, (err,data) => {
+        return await Issue.deleteMany({project : req.body.project}, (err,data) => {
           if(!data || err){
             return res.json({ error: 'could not delete', project: req.body.project });
           }
           return res.json({ result: 'successfully deleted', project: req.body.project })
-        }).clone();
+        });
       }
 
       throw new Error;
-    }catch(error){
-      return 0//console.log(error)
-    }
-  });  
-
-  app.delete('/api/issues', async (req, res) => {    
-    try{
-      if(!req.body.project) return res.json({ error: 'missing project' })  
-      await Issue.findOneAndDelete({project : req.body.project}, (err,data) => {
-        if(!data || err){
-          return res.json({ error: 'could not delete', project: req.body.project });
-        }
-        return res.json({ result: 'successfully deleted', project: req.body.project })
-      }).clone();
     }catch(error){
       return 0//console.log(error)
     }

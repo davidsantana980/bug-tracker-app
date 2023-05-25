@@ -1,5 +1,5 @@
-import { Component } from "react";
-import { Container, Card, CardGroup, Button, Row, Col, Badge, ButtonGroup } from "react-bootstrap";
+import { Component, useState } from "react";
+import { Container, Card, CardGroup, Button, Row, Col, Badge, ButtonGroup, Modal } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import CreateProjectForm from "./createProject";
 
@@ -60,35 +60,61 @@ class IssueCards extends Component {
 
     render() {
 
-        if(!this.state.dataIsLoaded){
-            return (
-                <Container className="p-3">
-                    <h2>Please wait...</h2>
-                </Container>
-            )
-        } 
-
         let ProjectCards = () => {
             let projectAndIssueCountPair = this.uniqueProjectsByProp("project");
+            const [modal, setModal] = useState({show: false, _id: "", project: ""});
+
+            let WarningModal = (props) => {
+                return (
+                    <Modal
+                    {...props}
+                    size="lg"
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered
+                    >
+                    <Modal.Header closeButton>
+                        <Modal.Title id="contained-modal-title-vcenter">
+                        Do you really want to delete this project?
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button onClick={props.onHide}>Close</Button>
+                        <LinkContainer to={`/delete`} state={{project : props.project}}>
+                            <Card.Link><Button variant="danger">Delete project</Button></Card.Link>
+                        </LinkContainer>
+                    </Modal.Footer>
+                    </Modal>
+                )
+            }       
 
             return projectAndIssueCountPair.map((project, index) => {
                 return(
-                    <Container className="col-md-12 col-lg-6 mt-2" key={project.name}>
-                        <Card key={index}>
-                            <Card.Body>
-                                <Card.Title>{project.name}</Card.Title>
-                                <Card.Subtitle className="mb-2 text-muted">{project.openIssueCount} {project.openIssueCount === 1 ? "issue" : "issues"} in progress, {project.totalCount} total</Card.Subtitle>
-                                <ButtonGroup>
-                                    <LinkContainer to={`/see-issues`} state={{project : project.name}}>
-                                        <Card.Link><Button>See all issues</Button></Card.Link>
-                                    </LinkContainer>
-                                    <LinkContainer to={`/delete`} state={{project : project.name}}>
-                                        <Card.Link><Button variant="danger">Delete project</Button></Card.Link>
-                                    </LinkContainer>
-                                </ButtonGroup>
-                            </Card.Body>
-                        </Card>
-                    </Container>
+                    <>  
+                        <Row >
+                            <Col md="12" className="mt-2">
+                                <Container key={project.name}>
+                                    <Card key={index}>
+                                        <Card.Body>
+                                            <Card.Title>{project.name}</Card.Title>
+                                            <Card.Subtitle className="mb-2 text-muted">{project.openIssueCount} {project.openIssueCount === 1 ? "issue" : "issues"} in progress, {project.totalCount} total</Card.Subtitle>
+                                            <ButtonGroup>
+                                                <LinkContainer to={`/see-issues`} state={{project : project.name}}>
+                                                    <Card.Link><Button>See all issues</Button></Card.Link>
+                                                </LinkContainer>
+                                                <Button onClick={() => setModal({show: true,  project: project.name})} variant="danger">Delete project</Button>
+                                            </ButtonGroup>
+                                        </Card.Body>
+                                    </Card>
+                                </Container>
+                                <WarningModal 
+                                    show={modal.show}
+                                    onHide={() => setModal({show :false})}
+                                    project={modal.project}
+                                />
+                            </Col>
+                        </Row>
+
+                    </>
                 )
             }) 
         }
@@ -124,6 +150,14 @@ class IssueCards extends Component {
             });
         }
 
+        if(!this.state.dataIsLoaded){
+            return (
+                <Container className="p-3">
+                    <h2>Please wait...</h2>
+                </Container>
+            )
+        } 
+  
         if(!this.state.allIssues.length){
             return(
                 <Container className="mx-auto">

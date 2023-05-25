@@ -30,7 +30,7 @@ export default function DeleteIssueForm(){
       }
 
       if(!!obj.project){
-        fetch(`http://localhost:5000/api/issues`, {
+        fetch(process.env.REACT_APP_API_LINK, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
