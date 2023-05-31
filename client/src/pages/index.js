@@ -14,9 +14,9 @@ class IssueCards extends Component {
         };
     }
 
-    componentDidMount(){
+    async componentDidMount(){
         try{
-            fetch(process.env.REACT_APP_API_LINK) //?open=true")
+            await fetch(process.env.REACT_APP_API_LINK) //?open=true")
             .then((res) => res.json()) //take the response string and turn it into a json array
             .then((json) => { //take the json array from the previous step...
                 let openIssues = json.filter(project => project.open )
@@ -25,9 +25,12 @@ class IssueCards extends Component {
                     openIssues : openIssues,
                     dataIsLoaded:true //changed status
                 })
-            })  
+            })
+            .catch((error) => {
+                throw new Error("Network response was not OK");
+            })
         }catch(error){
-            // console.log(error)
+            console.log(error)
             this.setState({
                 dataIsLoaded:true //changed status
             })
