@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, ButtonGroup, Card, Col, Container, ListGroup, Modal, Row } from "react-bootstrap";
+import { Button, ButtonGroup, Card, Col, Container, ListGroup, Modal} from "react-bootstrap";
 import CardHeader from "react-bootstrap/esm/CardHeader";
 import { LinkContainer } from "react-router-bootstrap";
 
@@ -11,7 +11,7 @@ let DetailsModal = (props) => {
             return  (
                 <>           
                     <hr/>
-                    Assigned to:  {info.assigned_to}
+                    Assigned to:  <b>{info.assigned_to}</b>
                 </>
             ) 
         }
@@ -28,7 +28,7 @@ let DetailsModal = (props) => {
             <Modal.Body>
                 <Container >
                     <Card>
-                        <CardHeader as={Row}>
+                        <CardHeader>
                             <Col lg="10">
                                 <text>Issue ID: <b>{info._id}</b></text>
                             </Col>
@@ -38,7 +38,6 @@ let DetailsModal = (props) => {
                                         <Card.Link><Button className="float-end" variant="danger" size="sm">Delete issue</Button></Card.Link>
                                     </LinkContainer> 
                                 </ButtonGroup>
-        
                             </Col>
                         </CardHeader>
                         <Card.Body>
