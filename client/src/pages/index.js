@@ -155,8 +155,8 @@ class IssueCards extends Component {
 
         if(!this.state.dataIsLoaded){
             return (
-                <Container className="p-3">
-                    <h2>Please wait...</h2>
+                <Container fluid className="mt-2 p-4  col-lg-8 border bg-light">
+                    <h1>Please wait...</h1>
                 </Container>
             )
         } 
