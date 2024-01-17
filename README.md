@@ -1,6 +1,6 @@
 # Issue Tracker
 
-A full-stack web app built using the MERN stack (MongoDB, Express, React, and Node.js).
+A full-stack web app to help manage and assign project issues. Built using the MERN stack (MongoDB, Express, React, and Node.js).
 
 ## Features
 
@@ -20,7 +20,3 @@ The app is hosted at https://bug-tracker-5c68.onrender.com/
 * Express
 * React
 * Node.js
-
-## Author
-
-Salvador Ochoa
