@@ -10,10 +10,6 @@ A full-stack web app to help manage and assign project issues. Built using the M
 * Comment on issues
 * Filtered search for issues
 
-## Demo
-
-The app is hosted at https://bug-tracker-5c68.onrender.com/
-
 ## Tech Stack
 
 * MongoDB
